@@ -15,8 +15,8 @@ public class Segment
         string cabinClass,
         string equipment,
         FlightInfo flight,
-        Airport origin,
-        Airport destination,
+        string originAirportCode,
+        string destinationAirportCode,
         DateTime departure,
         DateTime arrival,
         string bookingClass,
@@ -44,8 +44,8 @@ public class Segment
         CabinClass = cabinClass;
         Equipment = equipment;
         Flight = flight;
-        Origin = origin;
-        Destination = destination;
+        OriginAirportCode = originAirportCode;
+        DestinationAirportCode = destinationAirportCode;
         Departure = departure;
         Arrival = arrival;
         BookingClass = bookingClass;
@@ -62,6 +62,8 @@ public class Segment
     public string CabinClass { get; private set; }
     public string Equipment { get; private set; }
     public FlightInfo Flight { get; private set; }
+    public string OriginAirportCode { get; private set; }
+    public string DestinationAirportCode { get; private set; }
     public Airport Origin { get; private set; }
     public Airport Destination { get; private set; }
     public DateTime Departure { get; private set; }

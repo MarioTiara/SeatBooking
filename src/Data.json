@@ -6,7 +6,477 @@
 					"passengerSeatMaps": [
 						{
 							"seatSelectionEnabledForPax": true,
-							
+							"seatMap": {
+								"rowsDisabledCauses": [],
+								"aircraft": "738",
+								"cabins": [
+									{
+										"deck": "MAIN",
+										"seatColumns": [
+											"LEFT_SIDE",
+											"A",
+											"B",
+											"C",
+											"AISLE",
+											"D",
+											"E",
+											"F",
+											"RIGHT_SIDE"
+										],
+										"seatRows": [
+
+											{
+												"rowNumber": 4,
+												"seatCodes": [
+													"BLANK",
+													"AISLE",
+													"SEAT"
+												],
+												"seats": [
+													{
+														"slotCharacteristics": [
+															"LEFT_SIDE"
+														],
+														"storefrontSlotCode": "BLANK",
+														"available": false,
+														"entitled": false,
+														"feeWaived": false,
+														"freeOfCharge": true,
+														"originallySelected": false
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4A",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"CH",
+															"W"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"K",
+															"W",
+															"LS",
+															"L",
+															"CH"
+														]
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4B",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"CH",
+															"9"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"K",
+															"LS",
+															"L",
+															"CH",
+															"9"
+														]
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4C",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"A",
+															"CH"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"A",
+															"K",
+															"LS",
+															"L",
+															"CH"
+														]
+													},
+													{
+														"storefrontSlotCode": "AISLE",
+														"available": false,
+														"entitled": false,
+														"feeWaived": false,
+														"freeOfCharge": true,
+														"originallySelected": false
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4D",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"A",
+															"CH"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"A",
+															"K",
+															"RS",
+															"L",
+															"CH"
+														]
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4E",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"CH",
+															"9"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"K",
+															"RS",
+															"L",
+															"CH",
+															"9"
+														]
+													},
+													{
+														"storefrontSlotCode": "SEAT",
+														"available": true,
+														"code": "4F",
+														"designations": [],
+														"entitled": true,
+														"feeWaived": false,
+														"entitledRuleId": "",
+														"feeWaivedRuleId": "",
+														"seatCharacteristics": [
+															"CH",
+															"W"
+														],
+														"limitations": [],
+														"refundIndicator": "R",
+														"freeOfCharge": false,
+														"prices": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"taxes": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"total": {
+															"alternatives": [
+																[
+																	{
+																		"amount": 65.0,
+																		"currency": "MYR"
+																	}
+																]
+															]
+														},
+														"originallySelected": false,
+														"rawSeatCharacteristics": [
+															"K",
+															"W",
+															"RS",
+															"L",
+															"CH"
+														]
+													},
+													{
+														"slotCharacteristics": [
+															"RIGHT_SIDE"
+														],
+														"storefrontSlotCode": "BLANK",
+														"available": false,
+														"entitled": false,
+														"feeWaived": false,
+														"freeOfCharge": true,
+														"originallySelected": false
+													}
+												]
+											}
+										]
+									}
+											
+								]
+							},
+							"passenger": {
+								"passengerIndex": 1,
+								"passengerNameNumber": "01.01",
+								"passengerDetails": {
+									"firstName": "Rutwik",
+									"lastName": "Sabre"
+								},
+								"passengerInfo": {
+									"dateOfBirth": "1970-08-17",
+									"gender": "MALE",
+									"type": "ADT",
+									"emails": [
+										"johnsabre@domain.com"
+									],
+									"phones": [],
+									"address": {
+										"street1": "street1",
+										"street2": "street2",
+										"postcode": "75039",
+										"state": "Texas",
+										"city": "city",
+										"country": "US",
+										"addressType": "HOME"
+									}
+								},
+								"preferences": {
+									"specialPreferences": {
+										"mealPreference": "",
+										"seatPreference": "",
+										"specialRequests": [],
+										"specialServiceRequestRemarks": []
+									},
+									"frequentFlyer": [
+										{
+											"airline": "OD",
+											"number": "88700194295",
+											"tierNumber": 0
+										}
+									]
+								},
+								"documentInfo": {
+									"issuingCountry": "",
+									"countryOfBirth": "",
+									"documentType": "F",
+									"nationality": "MY"
+								}
+							}
+						}
+					],
+					"segment": {
+						"@type": "Segment",
+						"segmentOfferInformation": {
+							"flightsMiles": 707,
+							"awardFare": false
+						},
+						"duration": 2,
+						"cabinClass": "Economy",
+						"equipment": "738",
+						"flight": {
+							"flightNumber": 312,
+							"operatingFlightNumber": 312,
+							"airlineCode": "OD",
+							"operatingAirlineCode": "OD",
+							"stopAirports": [],
+							"departureTerminal": "TERMINAL 1",
+							"arrivalTerminal": "TERMINAL 2"
+						},
+						"origin": "KUL",
+						"destination": "CGK",
+						"departure": "2025-08-27T17:55:00",
+						"arrival": "2025-08-27T19:10:00",
+						"bookingClass": "T",
+						"layoverDuration": 0,
+						"fareBasis": "TOWBSSMY",
+						"subjectToGovernmentApproval": false,
+						"segmentRef": "3937094243023851424"
+					}
 				}
 			]
 		}
