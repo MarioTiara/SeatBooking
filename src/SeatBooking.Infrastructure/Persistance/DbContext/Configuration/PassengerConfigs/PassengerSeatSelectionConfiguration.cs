@@ -13,14 +13,9 @@ public class PassengerSeatSelectionConfiguration : IEntityTypeConfiguration<Pass
         builder.Property(p => p.PassengerId).IsRequired();
         builder.Property(p => p.SeatSlotId).IsRequired();
 
-        builder.HasOne<Passenger>()
-            .WithMany()
-            .HasForeignKey(p => p.PassengerId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(p => p.SeatSlot)
             .WithMany()
             .HasForeignKey(p => p.SeatSlotId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

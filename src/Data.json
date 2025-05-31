@@ -1,0 +1,15 @@
+{
+	"seatsItineraryParts": [
+		{
+			"segmentSeatMaps": [
+				{
+					"passengerSeatMaps": [
+						{
+							"seatSelectionEnabledForPax": true,
+							
+				}
+			]
+		}
+	],
+	"selectedSeats": []
+}

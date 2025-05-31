@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace SeatBooking.Infrastructure.Persistance.DbContext;
 
-public class SeatBookingDbContext :Microsoft.EntityFrameworkCore.DbContext
+public class SeatBookingDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public SeatBookingDbContext(DbContextOptions<SeatBookingDbContext> options)
         : base(options)
@@ -18,4 +18,10 @@ public class SeatBookingDbContext :Microsoft.EntityFrameworkCore.DbContext
 
     // DbSet<T> properties as needed...
 }
+
+
+
+
+
+
 

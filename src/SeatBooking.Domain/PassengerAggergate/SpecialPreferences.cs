@@ -5,7 +5,7 @@ public class SpecialPreferences
     public SpecialPreferences(
         string mealPreference,
         string seatPreference,
-        List<SpecialPreferences> specialRequests,
+        List<SpecialRequest> specialRequests,
         List<SpecialServiceRequestRemark> specialServiceRequestRemarks)
     {
         MealPreference = mealPreference ?? throw new ArgumentNullException(nameof(mealPreference));
@@ -16,13 +16,13 @@ public class SpecialPreferences
 
     protected SpecialPreferences()
     {
-        SpecialRequests = new List<SpecialPreferences>();
+        SpecialRequests = new List<SpecialRequest>();
         SpecialServiceRequestRemarks = new List<SpecialServiceRequestRemark>();
     }
 
     public string MealPreference { get; }
     public string SeatPreference { get; }
-    public IReadOnlyList<SpecialPreferences> SpecialRequests { get; }
+    public IReadOnlyList<SpecialRequest> SpecialRequests { get; }
     public IReadOnlyList<SpecialServiceRequestRemark> SpecialServiceRequestRemarks { get; }
 
     public override bool Equals(object? obj)

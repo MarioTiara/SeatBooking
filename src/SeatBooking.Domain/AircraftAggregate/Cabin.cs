@@ -2,26 +2,14 @@ namespace SeatBooking.Domain.AircraftAggregate;
 
 public class Cabin
 {
-    private readonly List<SeatRow> _seatRows = new();
-    private readonly List<SeatColumn> _seatColumns = new();
-
-    protected Cabin()
-    {
-    }
-    public Cabin(string deck)
-    {
-        if (string.IsNullOrWhiteSpace(deck))
-            throw new ArgumentException("Deck cannot be null or empty.", nameof(deck));
-
-        Deck = deck;
-    }
-
     public int Id { get; private set; }
-
     public string Deck { get; private set; }
+    public string AircraftCode { get; private set; } = default!;
 
-    public IReadOnlyCollection<SeatRow> SeatRows => _seatRows.AsReadOnly();
-    public IReadOnlyCollection<SeatColumn> SeatColumns => _seatColumns.AsReadOnly();
+    // Navigation properties
+    public Aircraft Aircraft { get; private set; } = default!;
+    public ICollection<SeatRow> SeatRows { get; private set; } = new List<SeatRow>();
+    public ICollection<SeatColumn> SeatColumns { get; private set; } = new List<SeatColumn>();
 
     // Behavior: Add a seat row to the cabin
     public void AddSeatRow(SeatRow seatRow)
@@ -29,7 +17,7 @@ public class Cabin
         if (seatRow == null)
             throw new ArgumentNullException(nameof(seatRow));
 
-        _seatRows.Add(seatRow);
+        SeatRows.Add(seatRow);
     }
 
     // Behavior: Remove a seat row from the cabin
@@ -38,7 +26,7 @@ public class Cabin
         if (seatRow == null)
             throw new ArgumentNullException(nameof(seatRow));
 
-        _seatRows.Remove(seatRow);
+        SeatRows.Remove(seatRow);
     }
 
     // Behavior: Add a seat column to the cabin
@@ -47,7 +35,7 @@ public class Cabin
         if (seatColumn == null)
             throw new ArgumentNullException(nameof(seatColumn));
 
-        _seatColumns.Add(seatColumn);
+        SeatColumns.Add(seatColumn);
     }
 
     // Behavior: Remove a seat column from the cabin
@@ -56,6 +44,6 @@ public class Cabin
         if (seatColumn == null)
             throw new ArgumentNullException(nameof(seatColumn));
 
-        _seatColumns.Remove(seatColumn);
+        SeatColumns.Remove(seatColumn);
     }
 }

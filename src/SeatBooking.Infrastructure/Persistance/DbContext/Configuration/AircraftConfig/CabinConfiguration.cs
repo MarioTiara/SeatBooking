@@ -11,6 +11,15 @@ public class CabinConfiguration : IEntityTypeConfiguration<Cabin>
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Deck).IsRequired().HasMaxLength(50);
 
+        builder.Property(c => c.AircraftCode)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.HasOne(c => c.Aircraft)
+            .WithMany(a => a.Cabins)
+            .HasForeignKey(c => c.AircraftCode)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(c => c.SeatRows)
             .WithOne(r => r.Cabin)
             .HasForeignKey(r => r.CabinId)

@@ -2,13 +2,55 @@ using SeatBooking.Domain.PassengerAggregate;
 
 namespace SeatBooking.Domain.AircraftAggregate;
 
+// SeatSlot.cs
 public class SeatSlot
 {
-    private readonly List<SeatCharacteristic> _seatCharacteristics = new();
-    private readonly List<SeatPriceAlternative> _priceAlternatives = new();
-    private readonly List<PassengerSeatSelection> _seatSelections = new();
+    public int Id { get; private set; }
+    public string StorefrontSlotCode { get; private set; }
+    public string? Code { get; private set; }
+    public bool Available { get; private set; }
+    public bool Entitled { get; private set; }
+    public bool FreeOfCharge { get; private set; }
+    public bool FeeWaived { get; private set; }
+    public bool OriginallySelected { get; private set; }
 
-    public SeatSlot(string storefrontSlotCode, string? code, bool available, bool entitled, bool freeOfCharge)
+    public string? EntitledRuleId { get; private set; }
+    public string? FeeWaivedRuleId { get; private set; }
+    public string? RefundIndicator { get; private set; }
+
+    private readonly List<SeatCharacteristic> _seatCharacteristics = new();
+    public IReadOnlyCollection<SeatCharacteristic> SeatCharacteristics => _seatCharacteristics.AsReadOnly();
+
+    private readonly List<SeatPriceAlternative> _priceAlternatives = new();
+    public IReadOnlyCollection<SeatPriceAlternative> PriceAlternatives => _priceAlternatives.AsReadOnly();
+
+    private readonly List<SeatTaxAlternative> _taxes = new();
+    public IReadOnlyCollection<SeatTaxAlternative> Taxes => _taxes.AsReadOnly();
+    public IReadOnlyCollection<SeatPriceAlternative> Total => this.GetTotalAlternatives();
+
+    private readonly List<SlotDesignation> _designations = new();
+    public IReadOnlyCollection<SlotDesignation> Designations => _designations.AsReadOnly();
+
+    private readonly List<SlotLimitation> _limitations = new();
+    public IReadOnlyCollection<SlotLimitation> Limitations => _limitations.AsReadOnly();
+
+    private readonly List<PassengerSeatSelection> _seatSelections = new();
+    public IReadOnlyCollection<PassengerSeatSelection> SeatSelections => _seatSelections.AsReadOnly();
+
+    public int SeatRowId { get; private set; }
+    public SeatRow SeatRow { get; private set; } = default!;
+
+    public SeatSlot(
+        string storefrontSlotCode,
+        string? code,
+        bool available,
+        bool entitled,
+        bool freeOfCharge,
+        bool feeWaived,
+        bool originallySelected,
+        string? entitledRuleId,
+        string? feeWaivedRuleId,
+        string? refundIndicator)
     {
         if (string.IsNullOrWhiteSpace(storefrontSlotCode))
             throw new ArgumentException("StorefrontSlotCode cannot be null or empty.", nameof(storefrontSlotCode));
@@ -18,70 +60,50 @@ public class SeatSlot
         Available = available;
         Entitled = entitled;
         FreeOfCharge = freeOfCharge;
+        FeeWaived = feeWaived;
+        OriginallySelected = originallySelected;
+        EntitledRuleId = entitledRuleId;
+        FeeWaivedRuleId = feeWaivedRuleId;
+        RefundIndicator = refundIndicator;
     }
-    protected SeatSlot()
-    {
-    }
 
-    public int Id { get; private set; }
-    public string StorefrontSlotCode { get; private set; }
-    public string? Code { get; private set; }
-    public bool Available { get; private set; }
-    public bool Entitled { get; private set; }
-    public bool FreeOfCharge { get; private set; }
-
-    public IReadOnlyCollection<SeatCharacteristic> SeatCharacteristics => _seatCharacteristics.AsReadOnly();
-    public IReadOnlyCollection<SeatPriceAlternative> PriceAlternatives => _priceAlternatives.AsReadOnly();
-    public IReadOnlyCollection<PassengerSeatSelection> SeatSelections => _seatSelections.AsReadOnly();
-
-    public int SeatRowId { get; private set; }
-    public SeatRow SeatRow { get; private set; } = default!;
+    protected SeatSlot() { }
 
     public void AddSeatCharacteristic(SeatCharacteristic characteristic)
     {
-        if (characteristic == null)
-            throw new ArgumentNullException(nameof(characteristic));
-
+        if (characteristic == null) throw new ArgumentNullException(nameof(characteristic));
         _seatCharacteristics.Add(characteristic);
     }
 
-    public void RemoveSeatCharacteristic(SeatCharacteristic characteristic)
+    public void AddPriceAlternative(SeatPriceAlternative alt) => _priceAlternatives.Add(alt);
+    public void AddTax(SeatTaxAlternative tax) => _taxes.Add(tax);
+    public void AddDesignation(SlotDesignation d) => _designations.Add(d);
+    public void AddLimitation(SlotLimitation l) => _limitations.Add(l);
+    public void AddSeatSelection(PassengerSeatSelection selection) => _seatSelections.Add(selection);
+
+
+    public IReadOnlyCollection<SeatPriceAlternative> GetTotalAlternatives()
     {
-        if (characteristic == null)
-            throw new ArgumentNullException(nameof(characteristic));
+        // Group all price and tax components by currency
+        var currencyTotals = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
 
-        _seatCharacteristics.Remove(characteristic);
-    }
+        foreach (var priceAlt in _priceAlternatives)
+            foreach (var comp in priceAlt.Components)
+                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
 
-    public void AddPriceAlternative(SeatPriceAlternative priceAlternative)
-    {
-        if (priceAlternative == null)
-            throw new ArgumentNullException(nameof(priceAlternative));
+        foreach (var taxAlt in _taxes)
+            foreach (var comp in taxAlt.Components)
+                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
 
-        _priceAlternatives.Add(priceAlternative);
-    }
+        // Create one SeatPriceAlternative per currency
+        var result = new List<SeatPriceAlternative>();
+        foreach (var kvp in currencyTotals)
+        {
+            var alt = new SeatPriceAlternative(this.Id);
+            alt.AddComponent(new SeatPriceComponent(kvp.Value, kvp.Key));
+            result.Add(alt);
+        }
 
-    public void RemovePriceAlternative(SeatPriceAlternative priceAlternative)
-    {
-        if (priceAlternative == null)
-            throw new ArgumentNullException(nameof(priceAlternative));
-
-        _priceAlternatives.Remove(priceAlternative);
-    }
-
-    public void AddSeatSelection(PassengerSeatSelection seatSelection)
-    {
-        if (seatSelection == null)
-            throw new ArgumentNullException(nameof(seatSelection));
-
-        _seatSelections.Add(seatSelection);
-    }
-
-    public void RemoveSeatSelection(PassengerSeatSelection seatSelection)
-    {
-        if (seatSelection == null)
-            throw new ArgumentNullException(nameof(seatSelection));
-
-        _seatSelections.Remove(seatSelection);
+        return result.AsReadOnly();
     }
 }

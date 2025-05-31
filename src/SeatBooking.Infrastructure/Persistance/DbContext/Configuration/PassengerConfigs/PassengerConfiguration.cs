@@ -25,6 +25,24 @@ public class PassengerConfiguration : IEntityTypeConfiguration<Passenger>
         {
             sp.Property(x => x.MealPreference).IsRequired().HasMaxLength(100).HasColumnName("MealPreference");
             sp.Property(x => x.SeatPreference).IsRequired().HasMaxLength(100).HasColumnName("SeatPreference");
+
+            sp.OwnsMany(s => s.SpecialRequests, r =>
+            {
+                r.WithOwner().HasForeignKey("PassengerId");
+                r.Property<int>("Id"); // Shadow property for PK
+                r.HasKey("Id");
+                r.Property(x => x.Value).IsRequired().HasMaxLength(255);
+                r.ToTable("SpecialRequest");
+            });
+
+            sp.OwnsMany(s => s.SpecialServiceRequestRemarks, r =>
+            {
+                r.WithOwner().HasForeignKey("PassengerId");
+                r.Property<int>("Id"); // Shadow property for PK
+                r.HasKey("Id");
+                r.Property(x => x.Value).IsRequired().HasMaxLength(255);
+                r.ToTable("SpecialServiceRequestRemark");
+            });
         });
 
         // Address: one-to-one, separate table
@@ -45,19 +63,9 @@ public class PassengerConfiguration : IEntityTypeConfiguration<Passenger>
             .HasForeignKey("PassengerId")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany<Email>("_emails")
-            .WithOne()
-            .HasForeignKey("PassengerId")
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany<Phone>("_phones")
-            .WithOne()
-            .HasForeignKey("PassengerId")
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(p => p.SeatSelection)
-            .WithOne()
-            .HasForeignKey<PassengerSeatSelection>("PassengerId")
+            .WithOne(pss => pss.Passenger)
+            .HasForeignKey<PassengerSeatSelection>(pss => pss.PassengerId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Emails as owned collection

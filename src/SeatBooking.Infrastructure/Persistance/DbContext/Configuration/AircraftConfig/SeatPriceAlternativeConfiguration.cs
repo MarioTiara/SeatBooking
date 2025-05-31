@@ -1,16 +1,31 @@
+namespace SeatBooking.Infrastructure.Persistance.Configuration;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SeatBooking.Domain.AircraftAggregate;
 
-namespace SeatBooking.Infrastructure.Persistence.Configurations;
-public class SeatPriceComponentConfiguration : IEntityTypeConfiguration<SeatPriceComponent>
+public class SeatPriceAlternativeConfiguration : IEntityTypeConfiguration<SeatPriceAlternative>
 {
-    public void Configure(EntityTypeBuilder<SeatPriceComponent> builder)
+    public void Configure(EntityTypeBuilder<SeatPriceAlternative> builder)
     {
-        builder.ToTable("SeatPriceComponent");
-        builder.HasKey(c => c.Id);
-        builder.Property(c => c.Amount).IsRequired().HasColumnType("decimal(18,2)");
-        builder.Property(c => c.Currency).IsRequired().HasMaxLength(10);
-        builder.Property(c => c.SeatPriceAlternativeId).IsRequired();
+        builder.ToTable("SeatPriceAlternative");
+        builder.HasKey(pa => pa.Id);
+        builder.Property(pa => pa.SeatSlotId).IsRequired();
+
+        builder.HasOne(pa => pa.SeatSlot)
+            .WithMany(s => s.PriceAlternatives)
+            .HasForeignKey(pa => pa.SeatSlotId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Owned collection for components
+        builder.OwnsMany(pa => pa.Components, c =>
+        {
+            c.WithOwner().HasForeignKey("SeatPriceAlternativeId");
+            c.Property<int>("Id"); // Shadow property for PK
+            c.HasKey("Id");
+            c.Property(x => x.Amount).IsRequired().HasColumnType("decimal(18,2)");
+            c.Property(x => x.Currency).IsRequired().HasMaxLength(10);
+            c.ToTable("SeatPriceComponent");
+        });
     }
 }
