@@ -1,17 +1,19 @@
+using SeatBooking.Domain.Shared;
+
 namespace SeatBooking.Domain.SegmentAggregate;
 
 public class FlightInfo
 {
     protected FlightInfo() 
     {
-        StopAirports = new List<string>().AsReadOnly();
+        StopAirports = new List<Airport>().AsReadOnly();
     }
     public FlightInfo(
         int flightNumber,
         int operatingFlightNumber,
         string airlineCode,
         string operatingAirlineCode,
-        IEnumerable<string> stopAirports,
+        IEnumerable<Airport> stopAirports,
         string departureTerminal,
         string arrivalTerminal)
     {
@@ -35,13 +37,14 @@ public class FlightInfo
         ArrivalTerminal = arrivalTerminal;
     }
 
-    public int FlightNumber { get; }
-    public int OperatingFlightNumber { get; }
-    public string AirlineCode { get; }
-    public string OperatingAirlineCode { get; }
-    public IReadOnlyList<string> StopAirports { get; }
-    public string DepartureTerminal { get; }
-    public string ArrivalTerminal { get; }
+    public int Id { get; private set; }
+    public int FlightNumber { get; private set; }
+    public int OperatingFlightNumber { get; private set; }
+    public string AirlineCode { get; private set; }
+    public string OperatingAirlineCode { get; private set; }
+    public IReadOnlyList<Airport> StopAirports { get; private set; }
+    public string DepartureTerminal { get; private set; }
+    public string ArrivalTerminal { get; private set; }
 
     public override bool Equals(object? obj)
     {

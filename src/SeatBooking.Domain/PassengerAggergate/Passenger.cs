@@ -1,4 +1,5 @@
 using SeatBooking.Domain.Shared.ValueObjects;
+using SeatBooking.Domain.Shared;
 
 namespace SeatBooking.Domain.PassengerAggregate;
 

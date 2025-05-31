@@ -21,7 +21,7 @@ public class DocumentInfo
     protected DocumentInfo() 
     {
     }
-
+public int Id { get; private set; }
     public string IssuingCountry { get; }
     public string CountryOfBirth { get; }
     public string DocumentType { get; }

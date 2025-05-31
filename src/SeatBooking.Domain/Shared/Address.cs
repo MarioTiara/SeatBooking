@@ -1,4 +1,4 @@
-namespace SeatBooking.Domain.Shared.ValueObjects;
+namespace SeatBooking.Domain.Shared;
 
 public class Address
 {
@@ -33,7 +33,7 @@ public class Address
         Country = country;
         AddressType = addressType;
     }
-
+    public int Id { get; private set; }
     public string Street1 { get; }
     public string Street2 { get; }
     public string Postcode { get; }

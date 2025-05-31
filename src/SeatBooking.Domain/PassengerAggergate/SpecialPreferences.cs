@@ -5,8 +5,8 @@ public class SpecialPreferences
     public SpecialPreferences(
         string mealPreference,
         string seatPreference,
-        List<string> specialRequests,
-        List<string> specialServiceRequestRemarks)
+        List<SpecialPreferences> specialRequests,
+        List<SpecialServiceRequestRemark> specialServiceRequestRemarks)
     {
         MealPreference = mealPreference ?? throw new ArgumentNullException(nameof(mealPreference));
         SeatPreference = seatPreference ?? throw new ArgumentNullException(nameof(seatPreference));
@@ -16,14 +16,14 @@ public class SpecialPreferences
 
     protected SpecialPreferences()
     {
-        SpecialRequests = new List<string>();
-        SpecialServiceRequestRemarks = new List<string>();
+        SpecialRequests = new List<SpecialPreferences>();
+        SpecialServiceRequestRemarks = new List<SpecialServiceRequestRemark>();
     }
 
     public string MealPreference { get; }
     public string SeatPreference { get; }
-    public IReadOnlyList<string> SpecialRequests { get; }
-    public IReadOnlyList<string> SpecialServiceRequestRemarks { get; }
+    public IReadOnlyList<SpecialPreferences> SpecialRequests { get; }
+    public IReadOnlyList<SpecialServiceRequestRemark> SpecialServiceRequestRemarks { get; }
 
     public override bool Equals(object? obj)
     {
@@ -43,4 +43,18 @@ public class SpecialPreferences
             string.Join(",", SpecialRequests),
             string.Join(",", SpecialServiceRequestRemarks));
     }
+}
+
+public class SpecialRequest
+{
+    public int Id { get; set; }
+    public string Value { get; set; } = default!;
+    public int PassengerId { get; set; }
+}
+
+public class SpecialServiceRequestRemark
+{
+    public int Id { get; set; }
+    public string Value { get; set; } = default!;
+    public int PassengerId { get; set; }
 }
