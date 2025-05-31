@@ -454,9 +454,6 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DestinationAirportCode")
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("DestinationCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
 
@@ -486,9 +483,6 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OriginAirportCode")
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("OriginCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
 
@@ -504,15 +498,11 @@ namespace SeatBooking.Infrastructure.Migrations
 
                     b.HasIndex("DestinationAirportCode");
 
-                    b.HasIndex("DestinationCode");
-
                     b.HasIndex("FlightId");
 
                     b.HasIndex("FlightInfoId");
 
                     b.HasIndex("OriginAirportCode");
-
-                    b.HasIndex("OriginCode");
 
                     b.ToTable("Segment", (string)null);
                 });
@@ -993,15 +983,10 @@ namespace SeatBooking.Infrastructure.Migrations
 
             modelBuilder.Entity("SeatBooking.Domain.SegmentAggregate.Segment", b =>
                 {
-                    b.HasOne("SeatBooking.Domain.Shared.Airport", null)
-                        .WithMany()
-                        .HasForeignKey("DestinationAirportCode")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("SeatBooking.Domain.Shared.Airport", "Destination")
                         .WithMany()
-                        .HasForeignKey("DestinationCode")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("DestinationAirportCode")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SeatBooking.Domain.SegmentAggregate.FlightInfo", "Flight")
@@ -1015,14 +1000,9 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasForeignKey("FlightInfoId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("SeatBooking.Domain.Shared.Airport", null)
-                        .WithMany()
-                        .HasForeignKey("OriginAirportCode")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("SeatBooking.Domain.Shared.Airport", "Origin")
                         .WithMany()
-                        .HasForeignKey("OriginCode")
+                        .HasForeignKey("OriginAirportCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

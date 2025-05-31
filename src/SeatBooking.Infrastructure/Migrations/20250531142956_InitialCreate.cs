@@ -132,8 +132,8 @@ namespace SeatBooking.Infrastructure.Migrations
                     CabinClass = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Equipment = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FlightId = table.Column<int>(type: "int", nullable: false),
-                    OriginCode = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    DestinationCode = table.Column<string>(type: "nvarchar(10)", nullable: false),
+                    OriginAirportCode = table.Column<string>(type: "nvarchar(10)", nullable: false),
+                    DestinationAirportCode = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     Departure = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Arrival = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BookingClass = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
@@ -141,9 +141,7 @@ namespace SeatBooking.Infrastructure.Migrations
                     FareBasis = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SubjectToGovernmentApproval = table.Column<bool>(type: "bit", nullable: false),
                     SegmentRef = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DestinationAirportCode = table.Column<string>(type: "nvarchar(10)", nullable: true),
-                    FlightInfoId = table.Column<int>(type: "int", nullable: true),
-                    OriginAirportCode = table.Column<string>(type: "nvarchar(10)", nullable: true)
+                    FlightInfoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -155,18 +153,8 @@ namespace SeatBooking.Infrastructure.Migrations
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Segment_Airport_DestinationCode",
-                        column: x => x.DestinationCode,
-                        principalTable: "Airport",
-                        principalColumn: "Code");
-                    table.ForeignKey(
                         name: "FK_Segment_Airport_OriginAirportCode",
                         column: x => x.OriginAirportCode,
-                        principalTable: "Airport",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_Segment_Airport_OriginCode",
-                        column: x => x.OriginCode,
                         principalTable: "Airport",
                         principalColumn: "Code");
                     table.ForeignKey(
@@ -685,11 +673,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 column: "DestinationAirportCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Segment_DestinationCode",
-                table: "Segment",
-                column: "DestinationCode");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Segment_FlightId",
                 table: "Segment",
                 column: "FlightId");
@@ -703,11 +686,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 name: "IX_Segment_OriginAirportCode",
                 table: "Segment",
                 column: "OriginAirportCode");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Segment_OriginCode",
-                table: "Segment",
-                column: "OriginCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SlotDesignation_SeatSlotId",

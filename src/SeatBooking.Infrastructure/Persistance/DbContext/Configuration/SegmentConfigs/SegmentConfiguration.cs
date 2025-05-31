@@ -20,22 +20,12 @@ public class SegmentConfiguration : IEntityTypeConfiguration<Segment>
 
         builder.HasOne(s => s.Origin)
             .WithMany()
-            .HasForeignKey("OriginCode")
+            .HasForeignKey(s => s.OriginAirportCode)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(s => s.Destination)
             .WithMany()
-            .HasForeignKey("DestinationCode")
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne<Airport>()
-            .WithMany()
-            .HasForeignKey("OriginAirportCode")
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne<Airport>()
-            .WithMany()
-            .HasForeignKey("DestinationAirportCode")
+            .HasForeignKey(s => s.DestinationAirportCode)
             .OnDelete(DeleteBehavior.Cascade); // Only one CASCADE allowed
 
         builder.HasOne(s => s.Flight)

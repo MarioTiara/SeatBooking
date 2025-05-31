@@ -7,13 +7,14 @@ public class FlightInfo
     protected FlightInfo() 
     {
         StopAirports = new List<Airport>().AsReadOnly();
+        StopAirportCodes = new List<string>().AsReadOnly();
     }
     public FlightInfo(
         int flightNumber,
         int operatingFlightNumber,
         string airlineCode,
         string operatingAirlineCode,
-        IEnumerable<Airport> stopAirports,
+        IEnumerable<string> stopAirportCodes,
         string departureTerminal,
         string arrivalTerminal)
     {
@@ -21,8 +22,8 @@ public class FlightInfo
             throw new ArgumentException("Airline code cannot be null or empty.", nameof(airlineCode));
         if (string.IsNullOrWhiteSpace(operatingAirlineCode))
             throw new ArgumentException("Operating airline code cannot be null or empty.", nameof(operatingAirlineCode));
-        if (stopAirports == null)
-            throw new ArgumentNullException(nameof(stopAirports));
+        if (stopAirportCodes == null)
+            throw new ArgumentNullException(nameof(stopAirportCodes));
         if (string.IsNullOrWhiteSpace(departureTerminal))
             throw new ArgumentException("Departure terminal cannot be null or empty.", nameof(departureTerminal));
         if (string.IsNullOrWhiteSpace(arrivalTerminal))
@@ -32,7 +33,7 @@ public class FlightInfo
         OperatingFlightNumber = operatingFlightNumber;
         AirlineCode = airlineCode;
         OperatingAirlineCode = operatingAirlineCode;
-        StopAirports = stopAirports.ToList().AsReadOnly();
+        StopAirportCodes = stopAirportCodes?.ToList().AsReadOnly() ?? new List<string>().AsReadOnly();
         DepartureTerminal = departureTerminal;
         ArrivalTerminal = arrivalTerminal;
     }
@@ -43,6 +44,7 @@ public class FlightInfo
     public string AirlineCode { get; private set; }
     public string OperatingAirlineCode { get; private set; }
     public IReadOnlyList<Airport> StopAirports { get; private set; }
+    public IReadOnlyList<string> StopAirportCodes { get; private set; }
     public string DepartureTerminal { get; private set; }
     public string ArrivalTerminal { get; private set; }
 
