@@ -355,6 +355,7 @@ namespace SeatBooking.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    SeatCodes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RowNumber = table.Column<int>(type: "int", nullable: false),
                     CabinId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -438,6 +439,7 @@ namespace SeatBooking.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsRaw = table.Column<bool>(type: "bit", nullable: false),
+                    IsSlot = table.Column<bool>(type: "bit", nullable: false),
                     SeatSlotId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

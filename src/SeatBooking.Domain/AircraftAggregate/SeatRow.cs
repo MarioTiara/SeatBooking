@@ -4,17 +4,19 @@ public class SeatRow
 {
     private readonly List<SeatSlot> _seatSlots = new();
 
-    public SeatRow(int rowNumber, int cabinId)
+    public SeatRow(int rowNumber, int cabinId, string seatCodes)
     {
 
         RowNumber = rowNumber;
         CabinId = cabinId;
+        SeatCodes = seatCodes;
     }
 protected SeatRow()
     {
     }
 
     public int Id { get; private set; }
+    public string SeatCodes { get; private set; }
 
     public int RowNumber { get; private set; }
 

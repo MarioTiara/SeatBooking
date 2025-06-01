@@ -97,6 +97,9 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.Property<bool>("IsRaw")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsSlot")
+                        .HasColumnType("bit");
+
                     b.Property<int>("SeatSlotId")
                         .HasColumnType("int");
 
@@ -187,6 +190,10 @@ namespace SeatBooking.Infrastructure.Migrations
 
                     b.Property<int>("RowNumber")
                         .HasColumnType("int");
+
+                    b.Property<string>("SeatCodes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

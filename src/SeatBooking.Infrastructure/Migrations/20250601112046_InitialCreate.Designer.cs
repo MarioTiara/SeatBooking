@@ -12,7 +12,7 @@ using SeatBooking.Infrastructure.Persistance.DbContext;
 namespace SeatBooking.Infrastructure.Migrations
 {
     [DbContext(typeof(SeatBookingDbContext))]
-    [Migration("20250601103141_InitialCreate")]
+    [Migration("20250601112046_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -98,6 +98,9 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsRaw")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSlot")
                         .HasColumnType("bit");
 
                     b.Property<int>("SeatSlotId")
@@ -190,6 +193,10 @@ namespace SeatBooking.Infrastructure.Migrations
 
                     b.Property<int>("RowNumber")
                         .HasColumnType("int");
+
+                    b.Property<string>("SeatCodes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

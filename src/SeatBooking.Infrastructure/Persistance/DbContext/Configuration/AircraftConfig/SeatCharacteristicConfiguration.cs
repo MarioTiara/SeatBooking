@@ -11,6 +11,7 @@ public class SeatCharacteristicConfiguration : IEntityTypeConfiguration<SeatChar
         builder.HasKey(sc => sc.Id);
         builder.Property(sc => sc.Code).IsRequired().HasMaxLength(50);
         builder.Property(sc => sc.IsRaw).IsRequired();
+        builder.Property(sc => sc.IsSlot).IsRequired();
         builder.Property(sc => sc.SeatSlotId).IsRequired();
     }
 }

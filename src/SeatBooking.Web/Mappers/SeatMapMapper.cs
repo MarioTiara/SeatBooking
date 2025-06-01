@@ -26,8 +26,9 @@ public static class AircraftMapper
                 {
                     foreach (var rowDto in cabinDto.SeatRows)
                     {
-                        var seatRow = new SeatRow(rowDto.RowNumber ?? 0, cabin.Id);
-
+                        var seatcodesList=rowDto.SeatCodes?.Select(code => code ?? string.Empty).ToList()?? new List<string>();
+                        var seatcodes=string.Join(";", seatcodesList);
+                        var seatRow = new SeatRow(rowDto.RowNumber ?? 0, cabin.Id, seatcodes);
                         // Map seat slots
                         if (rowDto.Seats != null)
                         {
@@ -60,18 +61,24 @@ public static class AircraftMapper
                                         seatSlot.AddLimitation(new SlotLimitation(limitation));
                                 }
 
+                                // Map slot characteristics
+                                if (seatDto.SlotCharacteristics != null)
+                                {
+                                    foreach (var ch in seatDto.SlotCharacteristics)
+                                        seatSlot.AddSeatCharacteristic(new SeatCharacteristic(ch, false, true));
+                                }
                                 // Map seat characteristics
                                 if (seatDto.SeatCharacteristics != null)
                                 {
                                     foreach (var ch in seatDto.SeatCharacteristics)
-                                        seatSlot.AddSeatCharacteristic(new SeatCharacteristic(ch, false));
+                                        seatSlot.AddSeatCharacteristic(new SeatCharacteristic(ch, false, false));
                                 }
 
                                 // Map raw seat characteristics
                                 if (seatDto.RawSeatCharacteristics != null)
                                 {
                                     foreach (var ch in seatDto.RawSeatCharacteristics)
-                                        seatSlot.AddSeatCharacteristic(new SeatCharacteristic(ch, true));
+                                        seatSlot.AddSeatCharacteristic(new SeatCharacteristic(ch, true, false));
                                 }
 
                                 // Map prices
@@ -133,9 +140,9 @@ public static class AircraftMapper
                 SeatColumns: cabin.SeatColumns.Select(col => col.Code).ToList(),
                 SeatRows: cabin.SeatRows.Select(row => new SeatRowDto(
                     RowNumber: row.RowNumber,
-                    SeatCodes: row.SeatSlots.Select(slot => slot.Code ?? string.Empty).ToList(),
+                    SeatCodes: row.SeatCodes.Split(';').Select(code => code.Trim()).ToList(),   
                     Seats: row.SeatSlots.Select(slot => new SeatDto(
-                        SlotCharacteristics: slot.SeatCharacteristics.Select(sc => sc.Code).ToList(),
+                        SlotCharacteristics: slot.SeatCharacteristics.Where(p=>p.IsRaw==false && p.IsSlot==true).Select(sc => sc.Code).ToList(),
                         StorefrontSlotCode: slot.StorefrontSlotCode,
                         Available: slot.Available,
                         Entitled: slot.Entitled,
@@ -146,7 +153,7 @@ public static class AircraftMapper
                         Designations: slot.Designations.Select(d => d.Code).Cast<object>().ToList(),
                         EntitledRuleId: slot.EntitledRuleId,
                         FeeWaivedRuleId: slot.FeeWaivedRuleId,
-                        SeatCharacteristics: slot.SeatCharacteristics.Select(sc => sc.Code).ToList(),
+                        SeatCharacteristics: slot.SeatCharacteristics.Where(p=>p.IsRaw==false &&p.IsSlot==false).Select(sc => sc.Code).ToList(),
                         Limitations: slot.Limitations.Select(l => l.Code).Cast<object>().ToList(),
                         RefundIndicator: slot.RefundIndicator,
                         Prices: slot.PriceAlternatives.Any() ? new PriceAlternativesDto(
@@ -174,7 +181,7 @@ public static class AircraftMapper
                         //     }
                         // ) : null,
                         Total: null,
-                        RawSeatCharacteristics: slot.SeatCharacteristics.Where(sc => sc.IsRaw).Select(sc => sc.Code).ToList()
+                        RawSeatCharacteristics: slot.SeatCharacteristics.Where(sc => sc.IsRaw && !sc.IsSlot).Select(sc => sc.Code).ToList()
                     )).ToList()
                 )).ToList()
             )).ToList()
