@@ -10,6 +10,8 @@ public class Passenger
     private readonly List<FrequentFlyer> _frequentFlyers = new();
 
     public Passenger(
+        int passengerIndex,
+        string passengerNameNumber,
         string firstName,
         string lastName,
         DateTime dateOfBirth,
@@ -33,6 +35,13 @@ public class Passenger
             throw new ArgumentNullException(nameof(specialPreferences));
         if (documentInfo == null)
             throw new ArgumentNullException(nameof(documentInfo));
+        if (string.IsNullOrWhiteSpace(passengerNameNumber))
+            throw new ArgumentException("Passenger name number cannot be null or empty.", nameof(passengerNameNumber));
+        if (passengerIndex < 0)
+            throw new ArgumentOutOfRangeException(nameof(passengerIndex), "Passenger index cannot be negative.");
+
+        PassengerIndex = passengerIndex;
+        PassengerNameNumber = passengerNameNumber;
 
         FirstName = firstName;
         LastName = lastName;

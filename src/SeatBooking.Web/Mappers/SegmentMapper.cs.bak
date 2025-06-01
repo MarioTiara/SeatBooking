@@ -1,5 +1,6 @@
 using SeatBooking.Domain.SegmentAggregate;
 using SeatBooking.Web.Models;
+using System.Linq;
 
 namespace SeatBooking.Web.Mappers;
 
@@ -7,6 +8,12 @@ public static class SegmentMapper
 {
     public static Segment ToDomain(this SegmentDto dto)
     {
+        // Handle StopAirports as List<string> (from List<object> in FlightDto)
+        var stopAirports = dto.Flight.StopAirports?
+            .Select(sa => sa?.ToString() ?? string.Empty)
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .ToList() ?? new List<string>();
+
         return new Segment(
             dto.SegmentOfferInformation.FlightsMiles,
             dto.SegmentOfferInformation.AwardFare,
@@ -18,12 +25,12 @@ public static class SegmentMapper
                 dto.Flight.OperatingFlightNumber,
                 dto.Flight.AirlineCode,
                 dto.Flight.OperatingAirlineCode,
-                dto.Flight.StopAirports,
+                stopAirports,
                 dto.Flight.DepartureTerminal,
                 dto.Flight.ArrivalTerminal
             ),
-            dto.Origin,                
-            dto.Destination,           
+            dto.Origin,
+            dto.Destination,
             DateTime.Parse(dto.Departure),
             DateTime.Parse(dto.Arrival),
             dto.BookingClass,

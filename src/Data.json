@@ -33,17 +33,7 @@
 													"SEAT"
 												],
 												"seats": [
-													{
-														"slotCharacteristics": [
-															"LEFT_SIDE"
-														],
-														"storefrontSlotCode": "BLANK",
-														"available": false,
-														"entitled": false,
-														"feeWaived": false,
-														"freeOfCharge": true,
-														"originallySelected": false
-													},
+		
 													{
 														"storefrontSlotCode": "SEAT",
 														"available": true,
@@ -99,180 +89,7 @@
 															"CH"
 														]
 													},
-													{
-														"storefrontSlotCode": "SEAT",
-														"available": true,
-														"code": "4B",
-														"designations": [],
-														"entitled": true,
-														"feeWaived": false,
-														"entitledRuleId": "",
-														"feeWaivedRuleId": "",
-														"seatCharacteristics": [
-															"CH",
-															"9"
-														],
-														"limitations": [],
-														"refundIndicator": "R",
-														"freeOfCharge": false,
-														"prices": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"taxes": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"total": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"originallySelected": false,
-														"rawSeatCharacteristics": [
-															"K",
-															"LS",
-															"L",
-															"CH",
-															"9"
-														]
-													},
-													{
-														"storefrontSlotCode": "SEAT",
-														"available": true,
-														"code": "4C",
-														"designations": [],
-														"entitled": true,
-														"feeWaived": false,
-														"entitledRuleId": "",
-														"feeWaivedRuleId": "",
-														"seatCharacteristics": [
-															"A",
-															"CH"
-														],
-														"limitations": [],
-														"refundIndicator": "R",
-														"freeOfCharge": false,
-														"prices": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"taxes": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"total": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"originallySelected": false,
-														"rawSeatCharacteristics": [
-															"A",
-															"K",
-															"LS",
-															"L",
-															"CH"
-														]
-													},
-													{
-														"storefrontSlotCode": "AISLE",
-														"available": false,
-														"entitled": false,
-														"feeWaived": false,
-														"freeOfCharge": true,
-														"originallySelected": false
-													},
-													{
-														"storefrontSlotCode": "SEAT",
-														"available": true,
-														"code": "4D",
-														"designations": [],
-														"entitled": true,
-														"feeWaived": false,
-														"entitledRuleId": "",
-														"feeWaivedRuleId": "",
-														"seatCharacteristics": [
-															"A",
-															"CH"
-														],
-														"limitations": [],
-														"refundIndicator": "R",
-														"freeOfCharge": false,
-														"prices": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"taxes": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"total": {
-															"alternatives": [
-																[
-																	{
-																		"amount": 65.0,
-																		"currency": "MYR"
-																	}
-																]
-															]
-														},
-														"originallySelected": false,
-														"rawSeatCharacteristics": [
-															"A",
-															"K",
-															"RS",
-															"L",
-															"CH"
-														]
-													},
-													{
+														{
 														"storefrontSlotCode": "SEAT",
 														"available": true,
 														"code": "4E",
@@ -381,17 +198,6 @@
 															"L",
 															"CH"
 														]
-													},
-													{
-														"slotCharacteristics": [
-															"RIGHT_SIDE"
-														],
-														"storefrontSlotCode": "BLANK",
-														"available": false,
-														"entitled": false,
-														"feeWaived": false,
-														"freeOfCharge": true,
-														"originallySelected": false
 													}
 												]
 											}

@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SeatBooking.Domain\SeatBooking.Domain.csproj" />
-    <ProjectReference Include="..\SeatBooking.Application\SeatBooking.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

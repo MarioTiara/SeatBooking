@@ -1,7 +1,6 @@
 using SeatBooking.Domain.PassengerAggregate;
 using SeatBooking.Domain.Shared;
 using SeatBooking.Domain.Shared.ValueObjects;
-
 using SeatBooking.Web.Models;
 
 namespace SeatBooking.Web.Mappers;
@@ -10,66 +9,89 @@ public static class PassengerMapper
 {
     public static Passenger ToDomain(this PassengerDto dto)
     {
-        // Map Address
-        var address = new Address(
-            dto.PassengerInfo.Address.Street1,
-            dto.PassengerInfo.Address.Street2,
-            dto.PassengerInfo.Address.Postcode,
-            dto.PassengerInfo.Address.State,
-            dto.PassengerInfo.Address.City,
-            dto.PassengerInfo.Address.Country,
-            dto.PassengerInfo.Address.AddressType
-        );
+        // Defensive: handle nulls for nested DTOs
+        var address = dto.PassengerInfo?.Address is not null
+            ? new Address(
+                dto.PassengerInfo.Address.Street1 ?? string.Empty,
+                dto.PassengerInfo.Address.Street2 ?? string.Empty,
+                dto.PassengerInfo.Address.Postcode ?? string.Empty,
+                dto.PassengerInfo.Address.State ?? string.Empty,
+                dto.PassengerInfo.Address.City ?? string.Empty,
+                dto.PassengerInfo.Address.Country ?? string.Empty,
+                dto.PassengerInfo.Address.AddressType ?? string.Empty
+            )
+            : new Address("", "", "", "", "", "", "");
 
-        // Map SpecialPreferences
-        var specialPreferences = new SpecialPreferences(
-            dto.Preferences.SpecialPreferences.MealPreference,
-            dto.Preferences.SpecialPreferences.SeatPreference,
-            dto.Preferences.SpecialPreferences.SpecialRequests
-                .OfType<string>()
-                .Select((v, i) => new SpecialRequest { Value = v, PassengerId = dto.PassengerIndex })
-                .ToList(),
-            dto.Preferences.SpecialPreferences.SpecialServiceRequestRemarks
-                .OfType<string>()
-                .Select((v, i) => new SpecialServiceRequestRemark { Value = v, PassengerId = dto.PassengerIndex })
-                .ToList()
-        );
+        var specialPreferences = dto.Preferences?.SpecialPreferences is not null
+            ? new SpecialPreferences(
+                dto.Preferences.SpecialPreferences.MealPreference ?? string.Empty,
+                dto.Preferences.SpecialPreferences.SeatPreference ?? string.Empty,
+                dto.Preferences.SpecialPreferences.SpecialRequests?
+                    .OfType<string>()
+                    .Select(v => new SpecialRequest { Value = v, PassengerId = dto.PassengerIndex ?? 0 })
+                    .ToList() ?? new List<SpecialRequest>(),
+                dto.Preferences.SpecialPreferences.SpecialServiceRequestRemarks?
+                    .OfType<string>()
+                    .Select(v => new SpecialServiceRequestRemark { Value = v, PassengerId = dto.PassengerIndex ?? 0 })
+                    .ToList() ?? new List<SpecialServiceRequestRemark>()
+            )
+            : new SpecialPreferences("", "", new List<SpecialRequest>(), new List<SpecialServiceRequestRemark>());
 
-        // Map DocumentInfo
-        var documentInfo = new DocumentInfo(
-            dto.DocumentInfo.IssuingCountry,
-            dto.DocumentInfo.CountryOfBirth,
-            dto.DocumentInfo.DocumentType,
-            dto.DocumentInfo.Nationality
-        );
+        var documentInfo = (dto.DocumentInfo != null
+            && !string.IsNullOrWhiteSpace(dto.DocumentInfo.IssuingCountry)
+            && !string.IsNullOrWhiteSpace(dto.DocumentInfo.CountryOfBirth)
+            && !string.IsNullOrWhiteSpace(dto.DocumentInfo.DocumentType)
+            && !string.IsNullOrWhiteSpace(dto.DocumentInfo.Nationality))
+            ? new DocumentInfo(
+                dto.DocumentInfo.IssuingCountry,
+                dto.DocumentInfo.CountryOfBirth,
+                dto.DocumentInfo.DocumentType,
+                dto.DocumentInfo.Nationality
+            )
+            : new DocumentInfo("UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN");
 
-        // Map FrequentFlyers
-        var frequentFlyers = dto.Preferences.FrequentFlyer
-            .Select(ff => new FrequentFlyer(ff.Airline, ff.Number, ff.TierNumber))
-            .ToList();
+        var frequentFlyers = dto.Preferences?.FrequentFlyer?
+            .Where(ff => ff is not null)
+            .Select(ff => new FrequentFlyer(
+                ff.Airline ?? string.Empty,
+                ff.Number ?? string.Empty,
+                ff.TierNumber ?? 0
+            ))
+            .ToList() ?? new List<FrequentFlyer>();
 
-        // Map Emails and Phones
-        var emails = dto.PassengerInfo.Emails?.Select(e => new Email(e)).ToList() ?? new();
-        var phones = dto.PassengerInfo.Phones?.Select(p => new Phone(p)).ToList() ?? new();
+        var emails = dto.PassengerInfo?.Emails?
+            .Where(e => !string.IsNullOrWhiteSpace(e))
+            .Select(e => new Email(e))
+            .ToList() ?? new List<Email>();
+
+        // Phones are List<object> in DTO, so convert to string if possible
+        var phones = dto.PassengerInfo?.Phones?
+            .OfType<string>()
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Select(p => new Phone(p))
+            .ToList() ?? new List<Phone>();
+
+        // Use DTO values for index and name number, fallback to safe defaults if missing
+        var passengerIndex = dto.PassengerIndex ?? 0;
+        var passengerNameNumber = dto.PassengerNameNumber ?? string.Empty;
 
         var passenger = new Passenger(
-            dto.PassengerDetails.FirstName,
-            dto.PassengerDetails.LastName,
-            DateTime.Parse(dto.PassengerInfo.DateOfBirth),
-            dto.PassengerInfo.Gender,
-            dto.PassengerInfo.Type,
+            passengerIndex,
+            passengerNameNumber,
+            dto.PassengerDetails?.FirstName ?? string.Empty,
+            dto.PassengerDetails?.LastName ?? string.Empty,
+            DateTime.TryParse(dto.PassengerInfo?.DateOfBirth, out var dob) ? dob : DateTime.MinValue,
+            dto.PassengerInfo?.Gender ?? string.Empty,
+            dto.PassengerInfo?.Type ?? string.Empty,
             address,
             specialPreferences,
             documentInfo
         );
 
-        // Add emails and phones
         foreach (var email in emails)
             passenger.AddEmail(email);
         foreach (var phone in phones)
             passenger.AddPhone(phone);
-
-        // Add frequent flyers
         foreach (var ff in frequentFlyers)
             passenger.AddFrequentFlyer(ff);
 

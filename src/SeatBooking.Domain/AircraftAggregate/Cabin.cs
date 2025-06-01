@@ -1,49 +1,62 @@
 namespace SeatBooking.Domain.AircraftAggregate;
 
+/// <summary>
+/// Cabin is an aggregate root for seat rows and columns within an aircraft.
+/// </summary>
 public class Cabin
 {
+    private readonly List<SeatRow> _seatRows = new();
+    private readonly List<SeatColumn> _seatColumns = new();
+
     public int Id { get; private set; }
     public string Deck { get; private set; }
-    public string AircraftCode { get; private set; } = default!;
+    public string AircraftCode { get; private set; }
 
-    // Navigation properties
-    public Aircraft Aircraft { get; private set; } = default!;
-    public ICollection<SeatRow> SeatRows { get; private set; } = new List<SeatRow>();
-    public ICollection<SeatColumn> SeatColumns { get; private set; } = new List<SeatColumn>();
+    // Navigation property to parent aggregate
+    public Aircraft Aircraft { get; private set; }
 
-    // Behavior: Add a seat row to the cabin
+    // Expose collections as read-only for encapsulation
+    public IReadOnlyCollection<SeatRow> SeatRows => _seatRows.AsReadOnly();
+    public IReadOnlyCollection<SeatColumn> SeatColumns => _seatColumns.AsReadOnly();
+
+    protected Cabin() { } // For EF Core
+
+    public Cabin(string deck, string aircraftCode)
+    {
+        if (string.IsNullOrWhiteSpace(deck))
+            throw new ArgumentException("Deck cannot be null or empty.", nameof(deck));
+        if (string.IsNullOrWhiteSpace(aircraftCode))
+            throw new ArgumentException("AircraftCode cannot be null or empty.", nameof(aircraftCode));
+
+        Deck = deck;
+        AircraftCode = aircraftCode;
+    }
+
     public void AddSeatRow(SeatRow seatRow)
     {
         if (seatRow == null)
             throw new ArgumentNullException(nameof(seatRow));
-
-        SeatRows.Add(seatRow);
+        _seatRows.Add(seatRow);
     }
 
-    // Behavior: Remove a seat row from the cabin
     public void RemoveSeatRow(SeatRow seatRow)
     {
         if (seatRow == null)
             throw new ArgumentNullException(nameof(seatRow));
-
-        SeatRows.Remove(seatRow);
+        _seatRows.Remove(seatRow);
     }
 
-    // Behavior: Add a seat column to the cabin
     public void AddSeatColumn(SeatColumn seatColumn)
     {
         if (seatColumn == null)
             throw new ArgumentNullException(nameof(seatColumn));
-
-        SeatColumns.Add(seatColumn);
+        _seatColumns.Add(seatColumn);
     }
 
-    // Behavior: Remove a seat column from the cabin
     public void RemoveSeatColumn(SeatColumn seatColumn)
     {
         if (seatColumn == null)
             throw new ArgumentNullException(nameof(seatColumn));
-
-        SeatColumns.Remove(seatColumn);
+        _seatColumns.Remove(seatColumn);
     }
 }
