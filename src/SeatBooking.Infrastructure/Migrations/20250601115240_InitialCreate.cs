@@ -386,7 +386,12 @@ namespace SeatBooking.Infrastructure.Migrations
                     EntitledRuleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     FeeWaivedRuleId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     RefundIndicator = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    SeatRowId = table.Column<int>(type: "int", nullable: false)
+                    SeatRowId = table.Column<int>(type: "int", nullable: false),
+                    Designations = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Limitations = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RawSeatCharacteristics = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatCharacteristics = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SlotCharacteristics = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -432,28 +437,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SeatCharacteristic",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsRaw = table.Column<bool>(type: "bit", nullable: false),
-                    IsSlot = table.Column<bool>(type: "bit", nullable: false),
-                    SeatSlotId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SeatCharacteristic", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SeatCharacteristic_SeatSlot_SeatSlotId",
-                        column: x => x.SeatSlotId,
-                        principalTable: "SeatSlot",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SeatPriceAlternative",
                 columns: table => new
                 {
@@ -485,46 +468,6 @@ namespace SeatBooking.Infrastructure.Migrations
                     table.PrimaryKey("PK_SeatTaxAlternative", x => x.Id);
                     table.ForeignKey(
                         name: "FK_SeatTaxAlternative_SeatSlot_SeatSlotId",
-                        column: x => x.SeatSlotId,
-                        principalTable: "SeatSlot",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SlotDesignation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SeatSlotId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SlotDesignation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SlotDesignation_SeatSlot_SeatSlotId",
-                        column: x => x.SeatSlotId,
-                        principalTable: "SeatSlot",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SlotLimitation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SeatSlotId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SlotLimitation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SlotLimitation_SeatSlot_SeatSlotId",
                         column: x => x.SeatSlotId,
                         principalTable: "SeatSlot",
                         principalColumn: "Id",
@@ -636,11 +579,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 column: "PassengerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SeatCharacteristic_SeatSlotId",
-                table: "SeatCharacteristic",
-                column: "SeatSlotId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SeatColumn_CabinId",
                 table: "SeatColumn",
                 column: "CabinId");
@@ -701,16 +639,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 column: "OriginAirportCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SlotDesignation_SeatSlotId",
-                table: "SlotDesignation",
-                column: "SeatSlotId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SlotLimitation_SeatSlotId",
-                table: "SlotLimitation",
-                column: "SeatSlotId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SpecialRequest_PassengerId",
                 table: "SpecialRequest",
                 column: "PassengerId");
@@ -746,9 +674,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 name: "Phone");
 
             migrationBuilder.DropTable(
-                name: "SeatCharacteristic");
-
-            migrationBuilder.DropTable(
                 name: "SeatColumn");
 
             migrationBuilder.DropTable(
@@ -759,12 +684,6 @@ namespace SeatBooking.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Segment");
-
-            migrationBuilder.DropTable(
-                name: "SlotDesignation");
-
-            migrationBuilder.DropTable(
-                name: "SlotLimitation");
 
             migrationBuilder.DropTable(
                 name: "SpecialRequest");

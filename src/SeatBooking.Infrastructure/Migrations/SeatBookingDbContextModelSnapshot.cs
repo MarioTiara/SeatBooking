@@ -81,35 +81,6 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.ToTable("Cabin", (string)null);
                 });
 
-            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatCharacteristic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsRaw")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSlot")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SeatSlotId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeatSlotId");
-
-                    b.ToTable("SeatCharacteristic", (string)null);
-                });
-
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatColumn", b =>
                 {
                     b.Property<int>("Id")
@@ -248,6 +219,31 @@ namespace SeatBooking.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("_designations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Designations");
+
+                    b.Property<string>("_limitations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Limitations");
+
+                    b.Property<string>("_rawSeatCharacteristics")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("RawSeatCharacteristics");
+
+                    b.Property<string>("_seatCharacteristics")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("SeatCharacteristics");
+
+                    b.Property<string>("_slotCharacteristics")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("SlotCharacteristics");
 
                     b.HasKey("Id");
 
@@ -678,17 +674,6 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.Navigation("Aircraft");
                 });
 
-            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatCharacteristic", b =>
-                {
-                    b.HasOne("SeatBooking.Domain.AircraftAggregate.SeatSlot", "SeatSlot")
-                        .WithMany("SeatCharacteristics")
-                        .HasForeignKey("SeatSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SeatSlot");
-                });
-
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatColumn", b =>
                 {
                     b.HasOne("SeatBooking.Domain.AircraftAggregate.Cabin", "Cabin")
@@ -740,62 +725,6 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasForeignKey("SeatRowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.OwnsMany("SeatBooking.Domain.AircraftAggregate.SlotDesignation", "Designations", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Code")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<int>("SeatSlotId")
-                                .HasColumnType("int");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("SeatSlotId");
-
-                            b1.ToTable("SlotDesignation", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("SeatSlotId");
-                        });
-
-                    b.OwnsMany("SeatBooking.Domain.AircraftAggregate.SlotLimitation", "Limitations", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Code")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<int>("SeatSlotId")
-                                .HasColumnType("int");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("SeatSlotId");
-
-                            b1.ToTable("SlotLimitation", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("SeatSlotId");
-                        });
-
-                    b.Navigation("Designations");
-
-                    b.Navigation("Limitations");
 
                     b.Navigation("SeatRow");
                 });
@@ -1081,8 +1010,6 @@ namespace SeatBooking.Infrastructure.Migrations
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatSlot", b =>
                 {
                     b.Navigation("PriceAlternatives");
-
-                    b.Navigation("SeatCharacteristics");
 
                     b.Navigation("SeatSelections");
 
