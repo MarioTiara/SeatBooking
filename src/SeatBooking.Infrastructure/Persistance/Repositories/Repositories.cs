@@ -18,6 +18,7 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
     public virtual async Task AddAsync(TEntity entity)
     {
         await _dbSet.AddAsync(entity);
+        await _context.SaveChangesAsync();
     }
 
     public virtual Task AddRangeAsync(List<TEntity> entity, int batchSize = 10000)

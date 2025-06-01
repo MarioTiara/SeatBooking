@@ -41,5 +41,7 @@ public class FlightInfoConfiguration : IEntityTypeConfiguration<FlightInfo>
                     j.ToTable("FlightInfoStopAirport");
                 }
             );
+
+        builder.Ignore(f => f.StopAirportCodes);
     }
 }

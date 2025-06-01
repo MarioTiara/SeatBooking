@@ -4,12 +4,11 @@ public class SeatRow
 {
     private readonly List<SeatSlot> _seatSlots = new();
 
-    public SeatRow(int rowNumber)
+    public SeatRow(int rowNumber, int cabinId)
     {
-        if (rowNumber <= 0)
-            throw new ArgumentException("Row number must be greater than zero.", nameof(rowNumber));
 
         RowNumber = rowNumber;
+        CabinId = cabinId;
     }
 protected SeatRow()
     {

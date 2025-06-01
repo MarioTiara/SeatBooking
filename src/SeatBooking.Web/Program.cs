@@ -1,5 +1,5 @@
-using SeatBooking.Infrastructure.Persistance.DbContext;
-using Microsoft.EntityFrameworkCore;
+
+using SeatBooking.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 
 // Add DbContext
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<SeatMapService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

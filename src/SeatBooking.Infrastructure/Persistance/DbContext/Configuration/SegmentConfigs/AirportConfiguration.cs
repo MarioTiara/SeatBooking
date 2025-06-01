@@ -12,5 +12,11 @@ public class AirportConfiguration : IEntityTypeConfiguration<Airport>
         builder.Property(a => a.Code).HasMaxLength(10);
         builder.Property(a => a.Name).IsRequired().HasMaxLength(100);
         builder.Property(a => a.City).IsRequired().HasMaxLength(100);
+
+        builder.HasData(
+            new Airport ( code: "CGK", name: "Soekarno-Hatta International", city: "Jakarta" ),
+            new Airport ( code: "KUL", name: "Kuala Lumpur International", city: "Kuala Lumpur" )
+            // Add more as needed
+        );
     }
 }

@@ -1,24 +1,26 @@
 namespace SeatBooking.Domain.AircraftAggregate;
 
 // Value Object for DDD
-public class SeatPriceComponent
+public class SeatTaxComponent
 {
     public int Id { get; private set; }
     public decimal Amount { get; }
     public string Currency { get; }
-    public int SeatPriceAlternativeId { get; private set; }
-    public SeatPriceAlternative SeatPriceAlternative { get; set; }
+    public int SeatTaxAlternativeId { get; private set; }
+    public SeatTaxAlternative SeatTaxAlternative { get;  set; } = default!;
 
     // For EF Core
-    private SeatPriceComponent() { }
+    private SeatTaxComponent() { }
 
-    public SeatPriceComponent(decimal amount, string currency)
+    public SeatTaxComponent(decimal amount, string currency)
     {
-
+        if (string.IsNullOrWhiteSpace(currency))
+            throw new ArgumentException("Currency cannot be null or empty.", nameof(currency));
+        
         Amount = amount;
         Currency = currency;
     }
-  
+
 
     // Equality members for value object semantics
     public override bool Equals(object? obj)

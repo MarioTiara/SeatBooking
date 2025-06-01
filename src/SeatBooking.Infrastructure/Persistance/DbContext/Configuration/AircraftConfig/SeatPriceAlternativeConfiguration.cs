@@ -1,31 +1,35 @@
-namespace SeatBooking.Infrastructure.Persistance.Configuration;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SeatBooking.Domain.AircraftAggregate;
 
+
 public class SeatPriceAlternativeConfiguration : IEntityTypeConfiguration<SeatPriceAlternative>
 {
-    public void Configure(EntityTypeBuilder<SeatPriceAlternative> builder)
-    {
-        builder.ToTable("SeatPriceAlternative");
-        builder.HasKey(pa => pa.Id);
-        builder.Property(pa => pa.SeatSlotId).IsRequired();
+       public void Configure(EntityTypeBuilder<SeatPriceAlternative> builder)
+       {
+              builder.ToTable("SeatPriceAlternative");
 
-        builder.HasOne(pa => pa.SeatSlot)
-            .WithMany(s => s.PriceAlternatives)
-            .HasForeignKey(pa => pa.SeatSlotId)
-            .OnDelete(DeleteBehavior.Cascade);
+              builder.HasKey(pa => pa.Id);
+              builder.Property(pa => pa.Id).ValueGeneratedOnAdd();
+              builder.Property(pa => pa.SeatSlotId).IsRequired();
 
-        // Owned collection for components
-        builder.OwnsMany(pa => pa.Components, c =>
-        {
-            c.WithOwner().HasForeignKey("SeatPriceAlternativeId");
-            c.Property<int>("Id"); // Shadow property for PK
-            c.HasKey("Id");
-            c.Property(x => x.Amount).IsRequired().HasColumnType("decimal(18,2)");
-            c.Property(x => x.Currency).IsRequired().HasMaxLength(10);
-            c.ToTable("SeatPriceComponent");
-        });
-    }
+              builder.HasOne(pa => pa.SeatSlot)
+                     .WithMany(s => s.PriceAlternatives)
+                     .HasForeignKey(pa => pa.SeatSlotId)
+                     .OnDelete(DeleteBehavior.Cascade);
+
+              // Use public property for navigation and tell EF to use field
+              builder.HasMany(pa => pa.Components)
+                     .WithOne()
+                     .HasForeignKey("SeatPriceAlternativeId")
+                     .OnDelete(DeleteBehavior.Restrict);
+
+              builder.Metadata
+                     .FindNavigation(nameof(SeatPriceAlternative.Components))!
+                     .SetPropertyAccessMode(PropertyAccessMode.Field);
+              builder.HasMany(pa => pa.Components)
+                     .WithOne(c => c.SeatPriceAlternative)
+                     .HasForeignKey(c => c.SeatPriceAlternativeId)
+                     .OnDelete(DeleteBehavior.Restrict);
+       }
 }

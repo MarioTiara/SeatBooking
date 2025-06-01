@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SeatBooking.Domain.IRepositories;
 using SeatBooking.Domain.PassengerAggregate;
 using SeatBooking.Infrastructure.Persistance.DbContext;
@@ -26,5 +27,20 @@ public class PassangerRepository : Repository<Domain.PassengerAggregate.Passenge
         await _context.SaveChangesAsync();
     }
 
-    // You can add any specific methods for the passenger repository here if needed
+    public async override Task<List<Passenger>> GetAllAsync()
+    {
+        return await _dbSet
+            .Include(p => p.SpecialPreferences)
+                .ThenInclude(sp => sp.SpecialRequests)
+            .Include(p => p.SpecialPreferences)
+                .ThenInclude(sp => sp.SpecialServiceRequestRemarks)
+            .Include(p => p.FrequentFlyers)
+            .Include(p => p.DocumentInfo)
+            .Include(p => p.Emails)
+            .Include(p => p.Phones)
+            .Include(p => p.Address)
+            .Include(p => p.SeatSelection)
+                .ThenInclude(ss => ss.SeatSlot)
+            .ToListAsync();
+    }
 }

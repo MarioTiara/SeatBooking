@@ -141,16 +141,37 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.Property<int>("SeatSlotId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SeatSlotId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("SeatSlotId");
 
-                    b.HasIndex("SeatSlotId1");
-
                     b.ToTable("SeatPriceAlternative", (string)null);
+                });
+
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatPriceComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("SeatPriceAlternativeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeatPriceAlternativeId");
+
+                    b.ToTable("SeatPriceComponent", (string)null);
                 });
 
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatRow", b =>
@@ -244,6 +265,32 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.HasIndex("SeatSlotId");
 
                     b.ToTable("SeatTaxAlternative", (string)null);
+                });
+
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatTaxComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("SeatTaxAlternativeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeatTaxAlternativeId");
+
+                    b.ToTable("SeatTaxComponent", (string)null);
                 });
 
             modelBuilder.Entity("SeatBooking.Domain.PassengerAggregate.DocumentInfo", b =>
@@ -498,6 +545,8 @@ namespace SeatBooking.Infrastructure.Migrations
 
                     b.HasIndex("DestinationAirportCode");
 
+                    b.HasIndex("Equipment");
+
                     b.HasIndex("FlightId");
 
                     b.HasIndex("FlightInfoId");
@@ -580,6 +629,20 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.HasKey("Code");
 
                     b.ToTable("Airport");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "CGK",
+                            City = "Jakarta",
+                            Name = "Soekarno-Hatta International"
+                        },
+                        new
+                        {
+                            Code = "KUL",
+                            City = "Kuala Lumpur",
+                            Name = "Kuala Lumpur International"
+                        });
                 });
 
             modelBuilder.Entity("FlightInfoStopAirport", b =>
@@ -624,7 +687,7 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.HasOne("SeatBooking.Domain.AircraftAggregate.Cabin", "Cabin")
                         .WithMany("SeatColumns")
                         .HasForeignKey("CabinId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cabin");
@@ -638,42 +701,18 @@ namespace SeatBooking.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SeatBooking.Domain.AircraftAggregate.SeatSlot", null)
-                        .WithMany("Total")
-                        .HasForeignKey("SeatSlotId1");
-
-                    b.OwnsMany("SeatBooking.Domain.AircraftAggregate.SeatPriceComponent", "Components", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
-
-                            b1.Property<int>("SeatPriceAlternativeId")
-                                .HasColumnType("int");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("SeatPriceAlternativeId");
-
-                            b1.ToTable("SeatPriceComponent", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("SeatPriceAlternativeId");
-                        });
-
-                    b.Navigation("Components");
-
                     b.Navigation("SeatSlot");
+                });
+
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatPriceComponent", b =>
+                {
+                    b.HasOne("SeatBooking.Domain.AircraftAggregate.SeatPriceAlternative", "SeatPriceAlternative")
+                        .WithMany("Components")
+                        .HasForeignKey("SeatPriceAlternativeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SeatPriceAlternative");
                 });
 
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatRow", b =>
@@ -762,38 +801,18 @@ namespace SeatBooking.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("SeatBooking.Domain.AircraftAggregate.SeatPriceComponent", "Components", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
-
-                            b1.Property<int>("SeatTaxAlternativeId")
-                                .HasColumnType("int");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("SeatTaxAlternativeId");
-
-                            b1.ToTable("SeatTaxComponent", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("SeatTaxAlternativeId");
-                        });
-
-                    b.Navigation("Components");
-
                     b.Navigation("SeatSlot");
+                });
+
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatTaxComponent", b =>
+                {
+                    b.HasOne("SeatBooking.Domain.AircraftAggregate.SeatTaxAlternative", "SeatTaxAlternative")
+                        .WithMany("Components")
+                        .HasForeignKey("SeatTaxAlternativeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SeatTaxAlternative");
                 });
 
             modelBuilder.Entity("SeatBooking.Domain.PassengerAggregate.DocumentInfo", b =>
@@ -989,6 +1008,12 @@ namespace SeatBooking.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SeatBooking.Domain.AircraftAggregate.Aircraft", "Aircraft")
+                        .WithMany()
+                        .HasForeignKey("Equipment")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("SeatBooking.Domain.SegmentAggregate.FlightInfo", "Flight")
                         .WithMany()
                         .HasForeignKey("FlightId")
@@ -1005,6 +1030,8 @@ namespace SeatBooking.Infrastructure.Migrations
                         .HasForeignKey("OriginAirportCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Aircraft");
 
                     b.Navigation("Destination");
 
@@ -1034,6 +1061,11 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.Navigation("SeatRows");
                 });
 
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatPriceAlternative", b =>
+                {
+                    b.Navigation("Components");
+                });
+
             modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatRow", b =>
                 {
                     b.Navigation("SeatSlots");
@@ -1048,8 +1080,11 @@ namespace SeatBooking.Infrastructure.Migrations
                     b.Navigation("SeatSelections");
 
                     b.Navigation("Taxes");
+                });
 
-                    b.Navigation("Total");
+            modelBuilder.Entity("SeatBooking.Domain.AircraftAggregate.SeatTaxAlternative", b =>
+                {
+                    b.Navigation("Components");
                 });
 
             modelBuilder.Entity("SeatBooking.Domain.PassengerAggregate.Passenger", b =>

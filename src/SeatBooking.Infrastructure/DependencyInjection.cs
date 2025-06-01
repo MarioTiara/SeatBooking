@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SeatBooking.Domain.IRepositories;
+using SeatBooking.Infrastructure.Persistance;
 using SeatBooking.Infrastructure.Persistance.DbContext;
 using SeatBooking.Infrastructure.Persistance.Repositories;
 
@@ -15,6 +16,9 @@ public static class DependencyInjection
         services.AddDbContext<SeatBookingDbContext>(options =>
             options.UseSqlServer(connectionString));
         services.AddScoped<IPassengerRepository, PassangerRepository  >();
+        services.AddScoped<ISegmentRepository, SegmentRepository  >();
+        services.AddScoped<IAircraftRepository, AircraftRepository  >();
+        
         return services;
     }
 }

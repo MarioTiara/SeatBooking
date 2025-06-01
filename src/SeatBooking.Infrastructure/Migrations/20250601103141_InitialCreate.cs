@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace SeatBooking.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -146,6 +148,12 @@ namespace SeatBooking.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Segment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Segment_Aircraft_Equipment",
+                        column: x => x.Equipment,
+                        principalTable: "Aircraft",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Segment_Airport_DestinationAirportCode",
                         column: x => x.DestinationAirportCode,
@@ -338,7 +346,7 @@ namespace SeatBooking.Infrastructure.Migrations
                         column: x => x.CabinId,
                         principalTable: "Cabin",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -449,8 +457,7 @@ namespace SeatBooking.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SeatSlotId = table.Column<int>(type: "int", nullable: false),
-                    SeatSlotId1 = table.Column<int>(type: "int", nullable: true)
+                    SeatSlotId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -461,11 +468,6 @@ namespace SeatBooking.Infrastructure.Migrations
                         principalTable: "SeatSlot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SeatPriceAlternative_SeatSlot_SeatSlotId1",
-                        column: x => x.SeatSlotId1,
-                        principalTable: "SeatSlot",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -545,7 +547,7 @@ namespace SeatBooking.Infrastructure.Migrations
                         column: x => x.SeatPriceAlternativeId,
                         principalTable: "SeatPriceAlternative",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -566,7 +568,16 @@ namespace SeatBooking.Infrastructure.Migrations
                         column: x => x.SeatTaxAlternativeId,
                         principalTable: "SeatTaxAlternative",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Airport",
+                columns: new[] { "Code", "City", "Name" },
+                values: new object[,]
+                {
+                    { "CGK", "Jakarta", "Soekarno-Hatta International" },
+                    { "KUL", "Kuala Lumpur", "Kuala Lumpur International" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -638,11 +649,6 @@ namespace SeatBooking.Infrastructure.Migrations
                 column: "SeatSlotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SeatPriceAlternative_SeatSlotId1",
-                table: "SeatPriceAlternative",
-                column: "SeatSlotId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SeatPriceComponent_SeatPriceAlternativeId",
                 table: "SeatPriceComponent",
                 column: "SeatPriceAlternativeId");
@@ -671,6 +677,11 @@ namespace SeatBooking.Infrastructure.Migrations
                 name: "IX_Segment_DestinationAirportCode",
                 table: "Segment",
                 column: "DestinationAirportCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Segment_Equipment",
+                table: "Segment",
+                column: "Equipment");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Segment_FlightId",

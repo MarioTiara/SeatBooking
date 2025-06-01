@@ -97,5 +97,56 @@ public static class PassengerMapper
 
         return passenger;
     }
+
+    public static PassengerDto ToDto(this Passenger passenger)
+    {
+        return new PassengerDto(
+            PassengerIndex: passenger.PassengerIndex,
+            PassengerNameNumber: passenger.PassengerNameNumber,
+            PassengerDetails: new PassengerDetailsDto(
+                FirstName: passenger.FirstName,
+                LastName: passenger.LastName
+            ),
+            PassengerInfo: new PassengerInfoDto(
+                DateOfBirth: passenger.DateOfBirth.ToString("yyyy-MM-dd"),
+                Gender: passenger.Gender,
+                Type: passenger.Type,
+                Emails: passenger.Emails.Select(e => e.Value).ToList(),
+                Phones: passenger.Phones.Select(p => (object)p.Value).ToList(),
+                Address: passenger.Address == null ? null : new AddressDto(
+                    Street1: passenger.Address.Street1,
+                    Street2: passenger.Address.Street2,
+                    Postcode: passenger.Address.Postcode,
+                    State: passenger.Address.State,
+                    City: passenger.Address.City,
+                    Country: passenger.Address.Country,
+                    AddressType: passenger.Address.AddressType
+                )
+            ),
+            Preferences: passenger.SpecialPreferences == null && (passenger.FrequentFlyers == null || !passenger.FrequentFlyers.Any())
+                ? null
+                : new PreferencesDto(
+                    SpecialPreferences: passenger.SpecialPreferences == null ? null : new SpecialPreferencesDto(
+                        MealPreference: passenger.SpecialPreferences.MealPreference,
+                        SeatPreference: passenger.SpecialPreferences.SeatPreference,
+                        SpecialRequests: passenger.SpecialPreferences.SpecialRequests?.Select(r => (object)r.Value).ToList(),
+                        SpecialServiceRequestRemarks: passenger.SpecialPreferences.SpecialServiceRequestRemarks?.Select(r => (object)r.Value).ToList()
+                    ),
+                    FrequentFlyer: passenger.FrequentFlyers?.Select(ff => new FrequentFlyerDto(
+                        Airline: ff.Airline,
+                        Number: ff.Number,
+                        TierNumber: ff.TierNumber
+                    )).ToList()
+                ),
+            DocumentInfo: passenger.DocumentInfo == null ? null : new DocumentInfoDto(
+                IssuingCountry: passenger.DocumentInfo.IssuingCountry,
+                CountryOfBirth: passenger.DocumentInfo.CountryOfBirth,
+                DocumentType: passenger.DocumentInfo.DocumentType,
+                Nationality: passenger.DocumentInfo.Nationality
+            )
+        );
+    }
+
+     
 }
 

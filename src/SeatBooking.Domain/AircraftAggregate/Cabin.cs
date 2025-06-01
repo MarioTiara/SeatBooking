@@ -23,10 +23,6 @@ public class Cabin
 
     public Cabin(string deck, string aircraftCode)
     {
-        if (string.IsNullOrWhiteSpace(deck))
-            throw new ArgumentException("Deck cannot be null or empty.", nameof(deck));
-        if (string.IsNullOrWhiteSpace(aircraftCode))
-            throw new ArgumentException("AircraftCode cannot be null or empty.", nameof(aircraftCode));
 
         Deck = deck;
         AircraftCode = aircraftCode;

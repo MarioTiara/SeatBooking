@@ -1,3 +1,4 @@
+using SeatBooking.Domain.AircraftAggregate;
 using SeatBooking.Domain.SegmentAggregate;
 using SeatBooking.Domain.Shared;
 
@@ -73,4 +74,5 @@ public class Segment
     public string FareBasis { get; private set; }
     public bool SubjectToGovernmentApproval { get; private set; }
     public string SegmentRef { get; private set; }
+    public Aircraft? Aircraft { get; private set; } // Navigation property
 }

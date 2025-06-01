@@ -1,27 +1,28 @@
-
-
 namespace SeatBooking.Domain.AircraftAggregate;
 
 public class SeatPriceAlternative
 {
-    public int Id { get; private set; }
-    public int SeatSlotId { get; private set; }
-    public SeatSlot SeatSlot { get; private set; } = default!;
-
     private readonly List<SeatPriceComponent> _components = new();
-    public IReadOnlyCollection<SeatPriceComponent> Components => _components.AsReadOnly();
-
+    
     // For EF Core
-    private SeatPriceAlternative() { }
+    protected SeatPriceAlternative() { }
 
     public SeatPriceAlternative(int seatSlotId)
     {
+            
         SeatSlotId = seatSlotId;
     }
 
+    public int Id { get; private set; }
+    public int SeatSlotId { get; private set; }
+    public SeatSlot SeatSlot { get; private set; } = default!;
+    public IReadOnlyCollection<SeatPriceComponent> Components => _components.AsReadOnly();
+
     public void AddComponent(SeatPriceComponent component)
     {
-        if (component == null) throw new ArgumentNullException(nameof(component));
+        if (component == null) 
+            throw new ArgumentNullException(nameof(component));
+        component.SeatPriceAlternative= this; // Ensure the relationship is set
         _components.Add(component);
     }
 }

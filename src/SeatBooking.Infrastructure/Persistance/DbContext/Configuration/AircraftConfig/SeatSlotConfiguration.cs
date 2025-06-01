@@ -59,5 +59,30 @@ public class SeatSlotConfiguration : IEntityTypeConfiguration<SeatSlot>
             .WithOne()
             .HasForeignKey("SeatSlotId")
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Configure collections using backing fields
+        builder.Navigation(s => s.SeatCharacteristics)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_seatCharacteristics");
+
+        builder.Navigation(s => s.PriceAlternatives)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_priceAlternatives");
+
+        builder.Navigation(s => s.Taxes)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_taxes");
+
+        builder.Navigation(s => s.Designations)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_designations");
+
+        builder.Navigation(s => s.Limitations)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_limitations");
+
+        builder.Navigation(s => s.SeatSelections)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasField("_seatSelections");
     }
 }

@@ -11,5 +11,10 @@ public class SeatColumnConfiguration : IEntityTypeConfiguration<SeatColumn>
         builder.HasKey(sc => sc.Id);
         builder.Property(sc => sc.Code).IsRequired().HasMaxLength(50);
         builder.Property(sc => sc.CabinId).IsRequired();
+
+        builder.HasOne(sc => sc.Cabin)
+               .WithMany(c => c.SeatColumns)
+               .HasForeignKey(sc => sc.CabinId)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SeatBooking.Domain.SegmentAggregate;
 using SeatBooking.Domain.Shared;
+using SeatBooking.Domain.AircraftAggregate;
 
 namespace SeatBooking.Infrastructure.Persistence.Configurations;
 
@@ -37,5 +38,12 @@ public class SegmentConfiguration : IEntityTypeConfiguration<Segment>
             .WithMany()
             .HasForeignKey("FlightInfoId")
             .OnDelete(DeleteBehavior.NoAction);
+
+        // Relationship: Segment.Equipment => Aircraft.Code
+        builder.HasOne(s => s.Aircraft)
+            .WithMany() // or .WithMany(a => a.Segments) if you want a collection on Aircraft
+            .HasForeignKey(s => s.Equipment)
+            .HasPrincipalKey(a => a.Code)
+            .OnDelete(DeleteBehavior.Restrict); // or your preferred behavior
     }
 }

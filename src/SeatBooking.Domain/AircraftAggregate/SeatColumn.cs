@@ -8,9 +8,6 @@ public class SeatColumn
     {
         if (string.IsNullOrWhiteSpace(code))
             throw new ArgumentException("Code cannot be null or empty.", nameof(code));
-        if (cabinId <= 0)
-            throw new ArgumentException("CabinId must be greater than zero.", nameof(cabinId));
-
         Code = code;
         CabinId = cabinId;
     }
