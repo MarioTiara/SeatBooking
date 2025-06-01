@@ -26,8 +26,8 @@ public static class AircraftMapper
                 {
                     foreach (var rowDto in cabinDto.SeatRows)
                     {
-                        var seatcodesList=rowDto.SeatCodes?.Select(code => code ?? string.Empty).ToList()?? new List<string>();
-                        var seatcodes=string.Join(";", seatcodesList);
+                        var seatcodesList = rowDto.SeatCodes?.Select(code => code ?? string.Empty).ToList() ?? new List<string>();
+                        var seatcodes = string.Join(";", seatcodesList);
                         var seatRow = new SeatRow(rowDto.RowNumber ?? 0, cabin.Id, seatcodes);
                         // Map seat slots
                         if (rowDto.Seats != null)
@@ -128,7 +128,7 @@ public static class AircraftMapper
         }
 
         return aircraft;
-    } 
+    }
 
     public static SeatMapDto ToDto(this Aircraft aircraft)
     {
@@ -140,7 +140,7 @@ public static class AircraftMapper
                 SeatColumns: cabin.SeatColumns.Select(col => col.Code).ToList(),
                 SeatRows: cabin.SeatRows.Select(row => new SeatRowDto(
                     RowNumber: row.RowNumber,
-                    SeatCodes: row.SeatCodes.Split(';').Select(code => code.Trim()).ToList(),   
+                    SeatCodes: row.SeatCodes.Split(';').Select(code => code.Trim()).ToList(),
                     Seats: row.SeatSlots.Select(slot => new SeatDto(
                         SlotCharacteristics: slot.SlotCharacteristics.ToList(),
                         StorefrontSlotCode: slot.StorefrontSlotCode,
@@ -172,19 +172,45 @@ public static class AircraftMapper
                                 )).ToList()
                             ).ToList()
                         ) : null,
-                        Total: slot.Total.Any() ? new PriceAlternativesDto(
-                            Alternatives: new List<List<PriceDto>> {
-                                slot.Total.Select(comp => new PriceDto(
-                                    Amount: (double?)comp.Amount,
-                                    Currency: comp.Currency
-                                )).ToList()
-                            }
-                        ) : null,
-                        // Total: null,
+                        Total: GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList()).Any()
+                            ? new PriceAlternativesDto(
+                                Alternatives: new List<List<PriceDto>> {
+                                    GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList())
+                                        .Select(comp => new PriceDto(
+                                            Amount: (double?)comp.Amount,
+                                            Currency: comp.Currency
+                                        )).ToList()
+                                }
+                            )
+                            : null,
+
                         RawSeatCharacteristics: slot.SeatCharacteristics.ToList()
                     )).ToList()
                 )).ToList()
             )).ToList()
         );
+    }
+
+    private static IReadOnlyList<SeatPriceComponent> GetTotalAlternatives(List<SeatTaxAlternative> tax, List<SeatPriceAlternative> price)
+    {
+        // Group all price and tax components by currency
+        var currencyTotals = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var priceAlt in price)
+            foreach (var comp in priceAlt.Components)
+                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
+
+        foreach (var taxAlt in tax)
+            foreach (var comp in taxAlt.Components)
+                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
+
+        // Create one FinanceComponent per currency (as a SeatPriceComponent for consistency)
+        var result = new List<SeatPriceComponent>();
+        foreach (var kvp in currencyTotals)
+        {
+            result.Add(new SeatPriceComponent(kvp.Value, kvp.Key));
+        }
+
+        return result.AsReadOnly();
     }
 }

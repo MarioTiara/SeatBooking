@@ -23,7 +23,7 @@ public class SeatMapService
         _repositorySegment = repositorySegment ?? throw new ArgumentNullException(nameof(repositorySegment));
     }
 
-    public async Task<bool> SaveSeatMapAsync(RootDto model)
+    public async Task<bool> SaveSeatMapAsync(SeatMapRootDto model)
     {
         if (model == null)
             throw new ArgumentNullException(nameof(model));
@@ -52,7 +52,7 @@ public class SeatMapService
         return true;
     }
 
-    public (List<Aircraft> AircraftList, List<Passenger> PassengerList, List<Segment> SegmentList) ExtractDomainLists(RootDto model)
+    public (List<Aircraft> AircraftList, List<Passenger> PassengerList, List<Segment> SegmentList) ExtractDomainLists(SeatMapRootDto model)
     {
         var aircraftList = new List<Aircraft>();
         var passengerList = new List<Passenger>();
@@ -91,7 +91,7 @@ public class SeatMapService
         return (aircraftList, passengerList, segmentList);
     }
 
-    public async Task<RootDto> LoadAllAsRootDtoAsync()
+    public async Task<SeatMapRootDto> LoadAllAsRootDtoAsync()
     {
         // 1. Load all data from repositories
         var aircraftList = await _repositoryAircraft.GetAllAsync();
@@ -129,7 +129,7 @@ public class SeatMapService
             )
         };
 
-        var rootDto = new RootDto
+        var rootDto = new SeatMapRootDto
         (
             SeatsItineraryParts: seatsItineraryParts,
             SelectedSeats: new List<object>() // or your logic

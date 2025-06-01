@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 // Root DTO
-public record RootDto(
+public record SeatMapRootDto(
     [property: JsonPropertyName("seatsItineraryParts")] List<SeatsItineraryPartDto>? SeatsItineraryParts,
     [property: JsonPropertyName("selectedSeats")] List<object>? SelectedSeats
 );

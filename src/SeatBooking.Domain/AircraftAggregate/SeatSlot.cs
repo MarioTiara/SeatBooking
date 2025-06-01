@@ -32,7 +32,6 @@ public class SeatSlot
 
     private readonly List<SeatTaxAlternative> _taxes = new();
     public IReadOnlyCollection<SeatTaxAlternative> Taxes => _taxes.AsReadOnly();
-    public IReadOnlyList<SeatPriceComponent> Total => this.GetTotalAlternatives();
 
     private readonly List<string> _designations = new();
     public IReadOnlyCollection<string> Designations => _designations.AsReadOnly();
@@ -95,27 +94,5 @@ public class SeatSlot
     public void AddSeatSelection(PassengerSeatSelection selection) => _seatSelections.Add(selection);
 
 
-    public IReadOnlyList<SeatPriceComponent> GetTotalAlternatives()
-    {
-        // Group all price and tax components by currency
-        var currencyTotals = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var priceAlt in _priceAlternatives)
-            foreach (var comp in priceAlt.Components)
-                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
-
-        foreach (var taxAlt in _taxes)
-            foreach (var comp in taxAlt.Components)
-                currencyTotals[comp.Currency] = currencyTotals.TryGetValue(comp.Currency, out var val) ? val + comp.Amount : comp.Amount;
-
-        // Create one FinanceComponent per currency (as a SeatPriceComponent for consistency)
-        var result = new List<SeatPriceComponent>();
-        foreach (var kvp in currencyTotals)
-        {
-            // You can use SeatPriceComponent or create a new derived type if you want to distinguish
-            result.Add(new SeatPriceComponent(kvp.Value, kvp.Key));
-        }
-
-        return result.AsReadOnly();
-    }
+   
 }

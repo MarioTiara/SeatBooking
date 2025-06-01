@@ -21,15 +21,15 @@ public class SeatMapController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostSeatMap([FromBody] RootDto model)
+    public async Task<IActionResult> PostSeatMap([FromBody] SeatMapRootDto request)
     {
-        if (model == null)
+        if (request == null)
             return BadRequest("Invalid seat map data.");
 
         // You can process, map, or save the model here as needed.
         // For now, just return success with the received data.
 
-        await _seatMapService.SaveSeatMapAsync(model);
+        await _seatMapService.SaveSeatMapAsync(request);
         return Ok();
     }
     [HttpGet]
