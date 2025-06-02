@@ -27,84 +27,15 @@ const SeatSelectionUI = () => {
         
         // Get the actual seats from JSON
         const actualSeats = seatMapInfo.cabins[0].seatRows[0].seats;
-        const seatColumns = seatMapInfo.cabins[0].seatColumns.filter(col => 
-          !['LEFT_SIDE', 'RIGHT_SIDE', 'AISLE'].includes(col)
-        );
-
-        // Create extended seat map based on real data structure
-        const extendedSeatMap = [];
+        const seatColumns = seatMapInfo.cabins[0].seatColumns;
+        const extendedSeatMap = seatMapInfo.cabins[0].seatRows.map(row => ({
+          ...row,
+          seats: row.seats.map(seat => ({
+            ...seat,
+            selected: false
+          }))
+        }));
         
-        // Add more rows for a realistic 738 layout
-        for (let row = 1; row <= 30; row++) {
-          const seatRow = {
-            rowNumber: row,
-            seats: []
-          };
-
-          seatColumns.forEach((column, index) => {
-            const seatCode = `${row}${column}`;
-            
-            // Use actual seat data if available (row 4), otherwise generate
-            const actualSeat = actualSeats.find(seat => seat.code === seatCode);
-            
-            if (actualSeat) {
-              seatRow.seats.push({
-                ...actualSeat,
-                selected: false
-              });
-            } else {
-              // Generate seat based on patterns
-              const isAvailable = Math.random() > 0.25; // 75% availability
-              const isPremium = row <= 6;
-              const isWindow = column === 'A' || column === 'F';
-              const isAisle = column === 'C' || column === 'D';
-              const hasExtraLegroom = [12, 13, 14].includes(row);
-              
-              let price = 15; // Standard seat
-              if (isPremium) price = 65;
-              else if (hasExtraLegroom || isWindow || isAisle) price = 25;
-              
-              const characteristics = [];
-              if (isWindow) characteristics.push('W');
-              if (hasExtraLegroom) characteristics.push('EL');
-              if (isPremium) characteristics.push('CH');
-              
-              seatRow.seats.push({
-                code: seatCode,
-                available: isAvailable,
-                selected: false,
-                entitled: true,
-                feeWaived: false,
-                freeOfCharge: false,
-                originallySelected: false,
-                seatCharacteristics: characteristics,
-                prices: {
-                  alternatives: [
-                    [
-                      {
-                        amount: price,
-                        currency: "MYR"
-                      }
-                    ]
-                  ],
-                },
-                total: {
-                  alternatives: [
-                    [
-                      {
-                        amount: price,
-                        currency: "MYR"
-                      }
-                    ]
-                  ],
-                }
-              });
-            }
-          });
-          
-          extendedSeatMap.push(seatRow);
-        }
-
         setSeatMapData({
           aircraft: seatMapInfo.aircraft,
           seatColumns: seatColumns,
@@ -190,6 +121,7 @@ const SeatSelectionUI = () => {
   };
 
   const getSeatPrice = (seat) => {
+    console.log('Seat price:', seat.total?.alternatives?.[0]?.[0]?.amount);
     return seat.total?.alternatives?.[0]?.[0]?.amount || 0;
   };
 
@@ -261,13 +193,16 @@ const SeatSelectionUI = () => {
               <div className="overflow-x-auto">
                 <div className="inline-block min-w-full">
                   {/* Column Headers */}
+                  <div className='flex justify-center'>
                   <SeatMapHeader seatColumns={seatMapData.seatColumns} />
+                  </div>
                   {/* Seat Rows */}
-                  <SeatRows seatRows={seatMapData.seatRows} 
-                            getSeatClass={getSeatClass} 
-                            getSeatCurrency={getSeatCurrency} 
-                            handleSeatClick={handleSeatClick}
-                            getSeatPrice={getSeatPrice} />
+                  <SeatRows
+                    seatRows={seatMapData.seatRows}
+                    seatColumns={seatMapData.seatColumns}
+                    getSeatClass={getSeatClass}
+                    handleSeatClick={handleSeatClick}
+                  />
                 </div>
               </div>
 
