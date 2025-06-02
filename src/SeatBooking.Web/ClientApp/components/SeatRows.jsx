@@ -6,6 +6,7 @@ const SeatRows = ({ seatRows, seatColumns, getSeatClass, handleSeatClick }) => (
       <div key={row.rowNumber} className="flex items-center justify-center">
         <div className="flex">
           {seatColumns.map((col, colIndex) => {
+            
             const seat = row.seats[colIndex];
             if (!seat || seat.storefrontSlotCode !== "SEAT") {
               // Render blank/aisle/side as empty space

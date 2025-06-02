@@ -15,44 +15,48 @@ const SeatSelectionUI = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Parse and extend the JSON data to create a full seat map
-  useEffect(() => {
-    const loadSeatMap = async () => {
-      try {
-        const response = await fetch("/api/SeatMap");
-        const jsonData = await response.json();
-        const segmentData = jsonData.seatsItineraryParts[0].segmentSeatMaps[0];
-        const passengerData = segmentData.passengerSeatMaps[0];
-        const seatMapInfo = passengerData.seatMap;
-        const flightSegment = segmentData.segment;
+  // Define loadSeatMap outside useEffect
+  const loadSeatMap = async () => {
+    try {
+      const response = await fetch("/api/SeatMap");
+      const jsonData = await response.json();
+      const segmentData = jsonData.seatsItineraryParts[0].segmentSeatMaps[0];
+      const passengerData = segmentData.passengerSeatMaps[0];
+      const seatMapInfo = passengerData.seatMap;
+      const flightSegment = segmentData.segment;
 
-        // Get the actual seats from JSON
-        const seatColumns = seatMapInfo.cabins[0].seatColumns;
-        const extendedSeatMap = seatMapInfo.cabins[0].seatRows.map((row) => ({
-          ...row,
-          seats: row.seats.map((seat) => ({
-            ...seat,
-            selected: false,
-          })),
-        }));
-
-        setSeatMapData({
-          aircraft: seatMapInfo.aircraft,
-          seatColumns: seatColumns,
-          seatRows: extendedSeatMap,
-          passenger: passengerData.passenger,
-          segment: flightSegment,
-        });
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error loading seat map:", error);
-        setLoading(false);
+      if (jsonData.selectedSeats[0]) {
+        console.log("Assigning selected seat");
+        setSelectedSeat(jsonData.selectedSeats[0]);
       }
-    };
 
-    // Simulate API loading delay
-    setTimeout(loadSeatMap, 100);
+      const seatColumns = seatMapInfo.cabins[0].seatColumns;
+      const extendedSeatMap = seatMapInfo.cabins[0].seatRows.map((row) => ({
+        ...row,
+        seats: row.seats.map((seat) => ({
+          ...seat,
+          selected: false,
+        })),
+      }));
+
+      setSeatMapData({
+        aircraft: seatMapInfo.aircraft,
+        seatColumns: seatColumns,
+        seatRows: extendedSeatMap,
+        passenger: passengerData.passenger,
+        segment: flightSegment,
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading seat map:", error);
+      setLoading(false);
+    }
+  };
+
+  // Call loadSeatMap on component mount
+  useEffect(() => {
+    loadSeatMap();
   }, []);
 
   const handleSeatClick = (rowIndex, seatIndex) => {
@@ -88,20 +92,18 @@ const SeatSelectionUI = () => {
     let baseClass =
       "w-8 h-8 mx-0.5 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs font-medium ";
 
+    if (selectedSeat.code == seat.code) {
+      return (
+        baseClass +
+        "bg-blue-600 border-blue-800 text-white transform scale-110 shadow-lg"
+      );
+    }
     if (!seat.available) {
       return (
         baseClass +
         "bg-gray-300 border-gray-400 cursor-not-allowed text-gray-500"
       );
     }
-
-    if (seat.selected) {
-      return (
-        baseClass +
-        "bg-blue-600 border-blue-800 text-white transform scale-110 shadow-lg"
-      );
-    }
-
     // Check seat characteristics from JSON data
     const characteristics = seat.seatCharacteristics || [];
     const isWindow = characteristics.includes("W");
@@ -167,6 +169,9 @@ const SeatSelectionUI = () => {
       const data = await res.json();
       console.log(data);
       alert(`Seat ${selectedSeat.code} selected successfully!`);
+
+      // Reload seat map data after successful POST
+      loadSeatMap();
     } catch (error) {
       console.error("Error during POST:", error);
       alert("Failed to select seat. Please try again.");
@@ -249,7 +254,6 @@ const SeatSelectionUI = () => {
                   />
                 </div>
               </div>
-
               <div className="text-center mt-6">
                 <p className="text-sm text-gray-600">Rear of Aircraft</p>
               </div>
@@ -271,7 +275,11 @@ const SeatSelectionUI = () => {
                 isOpen={isModalOpen}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
-                message={`Are you sure you want to select seat ${selectedSeat?.code}?`}
+                message={
+                  selectedSeat == null
+                    ? `Are you sure you want to select seat ${selectedSeat?.code}?`
+                    : `Are you sure you want to change seat to ${selectedSeat?.code}?`
+                }
               />
             )}
           </div>

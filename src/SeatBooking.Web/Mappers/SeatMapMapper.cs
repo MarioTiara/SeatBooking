@@ -141,54 +141,58 @@ public static class AircraftMapper
                 SeatRows: cabin.SeatRows.Select(row => new SeatRowDto(
                     RowNumber: row.RowNumber,
                     SeatCodes: row.SeatCodes.Split(';').Select(code => code.Trim()).ToList(),
-                    Seats: row.SeatSlots.Select(slot => new SeatDto(
-                        SlotCharacteristics: slot.SlotCharacteristics.ToList(),
-                        StorefrontSlotCode: slot.StorefrontSlotCode,
-                        Available: slot.Available,
-                        Entitled: slot.Entitled,
-                        FeeWaived: slot.FeeWaived,
-                        FreeOfCharge: slot.FreeOfCharge,
-                        OriginallySelected: slot.OriginallySelected,
-                        Code: slot.Code,
-                        Designations: slot.Designations.ToList(),
-                        EntitledRuleId: slot.EntitledRuleId,
-                        FeeWaivedRuleId: slot.FeeWaivedRuleId,
-                        SeatCharacteristics: slot.SeatCharacteristics.ToList(),
-                        Limitations: slot.Limitations.ToList(),
-                        RefundIndicator: slot.RefundIndicator,
-                        Prices: slot.PriceAlternatives.Any() ? new PriceAlternativesDto(
-                            Alternatives: slot.PriceAlternatives.Select(pa =>
-                                pa.Components.Select(comp => new PriceDto(
-                                    Amount: (double?)comp.Amount,
-                                    Currency: comp.Currency
-                                )).ToList()
-                            ).ToList()
-                        ) : null,
-                        Taxes: slot.Taxes.Any() ? new PriceAlternativesDto(
-                            Alternatives: slot.Taxes.Select(tax =>
-                                tax.Components.Select(comp => new PriceDto(
-                                    Amount: (double?)comp.Amount,
-                                    Currency: comp.Currency
-                                )).ToList()
-                            ).ToList()
-                        ) : null,
-                        Total: GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList()).Any()
-                            ? new PriceAlternativesDto(
-                                Alternatives: new List<List<PriceDto>> {
-                                    GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList())
-                                        .Select(comp => new PriceDto(
-                                            Amount: (double?)comp.Amount,
-                                            Currency: comp.Currency
-                                        )).ToList()
-                                }
-                            )
-                            : null,
-
-                        RawSeatCharacteristics: slot.SeatCharacteristics.ToList()
-                    )).ToList()
+                    Seats: row.SeatSlots.Select(slot => slot.ToDto()).ToList()
                 )).ToList()
             )).ToList()
         );
+    }
+
+    public static SeatDto ToDto(this SeatSlot slot)
+    {
+        return new SeatDto(
+                SlotCharacteristics: slot.SlotCharacteristics.ToList(),
+                StorefrontSlotCode: slot.StorefrontSlotCode,
+                Available: slot.Available,
+                Entitled: slot.Entitled,
+                FeeWaived: slot.FeeWaived,
+                FreeOfCharge: slot.FreeOfCharge,
+                OriginallySelected: slot.OriginallySelected,
+                Code: slot.Code,
+                Designations: slot.Designations.ToList(),
+                EntitledRuleId: slot.EntitledRuleId,
+                FeeWaivedRuleId: slot.FeeWaivedRuleId,
+                SeatCharacteristics: slot.SeatCharacteristics.ToList(),
+                Limitations: slot.Limitations.ToList(),
+                RefundIndicator: slot.RefundIndicator,
+                Prices: slot.PriceAlternatives.Any() ? new PriceAlternativesDto(
+                    Alternatives: slot.PriceAlternatives.Select(pa =>
+                        pa.Components.Select(comp => new PriceDto(
+                            Amount: (double?)comp.Amount,
+                            Currency: comp.Currency
+                        )).ToList()
+                    ).ToList()
+                ) : null,
+                Taxes: slot.Taxes.Any() ? new PriceAlternativesDto(
+                    Alternatives: slot.Taxes.Select(tax =>
+                        tax.Components.Select(comp => new PriceDto(
+                            Amount: (double?)comp.Amount,
+                            Currency: comp.Currency
+                        )).ToList()
+                    ).ToList()
+                ) : null,
+                Total: GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList()).Any()
+                    ? new PriceAlternativesDto(
+                        Alternatives: new List<List<PriceDto>> {
+                            GetTotalAlternatives(slot.Taxes.ToList(), slot.PriceAlternatives.ToList())
+                                .Select(comp => new PriceDto(
+                                    Amount: (double?)comp.Amount,
+                                    Currency: comp.Currency
+                                )).ToList()
+                        }
+                    )
+                    : null,
+
+                RawSeatCharacteristics: slot.SeatCharacteristics.ToList());
     }
 
     private static IReadOnlyList<SeatPriceComponent> GetTotalAlternatives(List<SeatTaxAlternative> tax, List<SeatPriceAlternative> price)

@@ -77,7 +77,14 @@ public class SeatSlot
         if (Available)
         {
             Available = false;
-            OriginallySelected = true;
+        }
+    }
+
+    public void MarkAvailable()
+    {
+        if (!Available)
+        {
+            Available = true;
         }
     }
 

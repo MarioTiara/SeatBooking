@@ -81,9 +81,12 @@ public class Passenger
     {
         if (slot == null)
             throw new ArgumentNullException(nameof(slot));
-        SeatSelection = new PassengerSeatSelection(this,slot);
+        SeatSelection = new PassengerSeatSelection(this, slot);
     }
-
+    public bool HasSeatSelection()
+    {
+        return SeatSelection != null;
+    }
     public void AddEmail(Email email)
     {
         if (email == null)

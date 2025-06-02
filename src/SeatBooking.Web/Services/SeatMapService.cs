@@ -127,7 +127,7 @@ public class SeatMapService
         var rootDto = new SeatMapRootDto
         (
             SeatsItineraryParts: seatsItineraryParts,
-            SelectedSeats: new List<object>() // or your logic
+            SelectedSeats: passengerList.Select(p=>p.SeatSelection.SeatSlot.ToDto()).ToList()
         );
 
         return rootDto;
@@ -140,6 +140,7 @@ public class SeatMapService
         try
         {
             var passenger = await unitOfWork.PassengerRepository.GetByPassengerNameNumberAsync(request.PassengerNameNumber);
+            
             if (passenger == null)
                 return false;
             var aircraft = await unitOfWork.AircraftRepository.GetByIdAsync(request.AircraftCode);

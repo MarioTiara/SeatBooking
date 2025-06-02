@@ -2,7 +2,7 @@ import React from "react";
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
   if (!isOpen) return null;
-
+  console.log("Rendering ConfirmationModal");
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-6">

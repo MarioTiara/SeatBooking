@@ -6,7 +6,7 @@ using System.Collections.Generic;
 // Root DTO
 public record SeatMapRootDto(
     [property: JsonPropertyName("seatsItineraryParts")] List<SeatsItineraryPartDto>? SeatsItineraryParts,
-    [property: JsonPropertyName("selectedSeats")] List<object>? SelectedSeats
+    [property: JsonPropertyName("selectedSeats")] List<SeatDto>? SelectedSeats
 );
 
 public record SeatsItineraryPartDto(

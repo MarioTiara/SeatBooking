@@ -7,6 +7,12 @@ namespace SeatBooking.Domain.IDomainServices
     {
         public bool TrySelectSeat(Aircraft aircraft, Passenger passenger, string slotCode)
         {
+            if (passenger.HasSeatSelection())
+            {
+                var oldSlot = passenger.SeatSelection!.SeatSlot;
+                oldSlot.MarkAvailable();
+            }
+
             var slot = aircraft.Cabins
             .SelectMany(c => c.SeatRows)
             .SelectMany(r => r.SeatSlots)
