@@ -26,9 +26,6 @@ public class SeatMapController : ControllerBase
         if (request == null)
             return BadRequest("Invalid seat map data.");
 
-        // You can process, map, or save the model here as needed.
-        // For now, just return success with the received data.
-
         await _seatMapService.SaveSeatMapAsync(request);
         return Ok();
     }
@@ -36,8 +33,26 @@ public class SeatMapController : ControllerBase
     public async Task<IActionResult> GetSeatMap()
     {
         var dtos = await _seatMapService.LoadAllAsRootDtoAsync();
-
         return Ok(dtos);
+    }
+
+    [HttpPost("select-seat")]
+    public async Task<IActionResult> SelectSeat([FromBody] SelectSeatRequestDto request)
+    {
+        try
+        {
+            if (request == null)
+                return BadRequest("Invalid selection request.");
+
+            var seatSlot = await _seatMapService.SelectSeatAsync(request);
+            return Ok(seatSlot);
+        
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    
     }
 }
 

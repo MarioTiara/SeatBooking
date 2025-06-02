@@ -27,6 +27,7 @@ const SelectedSeatInfo = ({
           <p className="text-sm text-gray-600">Characteristics</p>
           <p className="font-semibold text-gray-900">
             {selectedSeat.seatCharacteristics?.includes('W') && 'Window, '}
+            {selectedSeat.seatCharacteristics?.includes('A') && 'Aisle, '}
             {selectedSeat.seatCharacteristics?.includes('CH') && 'Extra Legroom, '}
             {selectedSeat.seatCharacteristics?.includes('EL') && 'Emergency Exit, '}
             {selectedSeat.seatCharacteristics?.includes('9') && 'Power Outlet'}

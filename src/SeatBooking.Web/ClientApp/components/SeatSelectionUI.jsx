@@ -17,7 +17,7 @@ const SeatSelectionUI = () => {
   useEffect(() => {
     const loadSeatMap = async () => {
       try {
-        const response = await fetch('http://localhost:5251/api/SeatMap');
+        const response = await fetch('/api/SeatMap');
         const jsonData = await response.json();
         console.log('Seat map data loaded:', jsonData);
         const segmentData = jsonData.seatsItineraryParts[0].segmentSeatMaps[0];
@@ -97,15 +97,11 @@ const SeatSelectionUI = () => {
     
     // Check seat characteristics from JSON data
     const characteristics = seat.seatCharacteristics || [];
-    const isPremium = characteristics.includes('CH');
     const isWindow = characteristics.includes('W');
+    const isAisle = characteristics.includes('W');
     const hasExtraLegroom = characteristics.includes('EL');
     
-    if (isPremium) {
-      return baseClass + "bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200";
-    }
-    
-    if (hasExtraLegroom || isWindow) {
+    if (hasExtraLegroom || isWindow || isAisle) {
       return baseClass + "bg-green-100 border-green-300 text-green-800 hover:bg-green-200";
     }
     

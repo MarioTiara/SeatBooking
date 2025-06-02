@@ -43,4 +43,9 @@ public class PassangerRepository : Repository<Domain.PassengerAggregate.Passenge
                 .ThenInclude(ss => ss.SeatSlot)
             .ToListAsync();
     }
+
+    public Task<Passenger?> GetByPassengerNameNumberAsync(string passengerNameNumber)
+    {
+        return _dbSet.FirstOrDefaultAsync(p => p.PassengerNameNumber == passengerNameNumber);
+    }
 }

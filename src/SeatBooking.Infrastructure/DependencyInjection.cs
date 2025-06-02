@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<IPassengerRepository, PassangerRepository  >();
         services.AddScoped<ISegmentRepository, SegmentRepository  >();
         services.AddScoped<IAircraftRepository, AircraftRepository  >();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }

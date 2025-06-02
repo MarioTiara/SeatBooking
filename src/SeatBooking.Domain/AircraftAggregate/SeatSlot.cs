@@ -72,6 +72,15 @@ public class SeatSlot
 
     protected SeatSlot() { }
 
+    public void MarkSelected()
+    {
+        if (Available)
+        {
+            Available = false;
+            OriginallySelected = true;
+        }
+    }
+
     public void AddPriceAlternative(SeatPriceAlternative alt) => _priceAlternatives.Add(alt);
     public void AddTax(SeatTaxAlternative tax) => _taxes.Add(tax);
     public void AddDesignation(string d) => _designations.Add(d);

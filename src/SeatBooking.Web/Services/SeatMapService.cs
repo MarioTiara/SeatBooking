@@ -4,23 +4,18 @@ using SeatBooking.Web.Mappers;
 using SeatBooking.Domain.AircraftAggregate;
 using SeatBooking.Domain.PassengerAggregate;
 using SeatBooking.Domain.SegmentAggregate;
+using SeatBooking.Domain.IDomainServices;
 
 
 namespace SeatBooking.Web.Services;
 
 public class SeatMapService
 {
-    private readonly IAircraftRepository _repositoryAircraft;
-    private readonly IPassengerRepository   _repositoryPassenger;
-    private readonly ISegmentRepository     _repositorySegment;
+    private readonly IUnitOfWork unitOfWork;
 
-    public SeatMapService(IAircraftRepository repositoryAircraft, 
-                          IPassengerRepository repositoryPassenger, 
-                          ISegmentRepository repositorySegment)
+    public SeatMapService(IUnitOfWork unitOfWork)
     {
-        _repositoryAircraft = repositoryAircraft ?? throw new ArgumentNullException(nameof(repositoryAircraft));
-        _repositoryPassenger = repositoryPassenger ?? throw new ArgumentNullException(nameof(repositoryPassenger));
-        _repositorySegment = repositorySegment ?? throw new ArgumentNullException(nameof(repositorySegment));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     public async Task<bool> SaveSeatMapAsync(SeatMapRootDto model)
@@ -34,25 +29,25 @@ public class SeatMapService
         // Save the aircraft to the repository
         foreach (var aircraft in aircraftList)
         {
-            await _repositoryAircraft.AddAsync(aircraft);
+            await unitOfWork.AircraftRepository.AddAsync(aircraft);
         }
 
         // Save the passengers to the repository
         foreach (var passenger in passengerList)
         {
-            await _repositoryPassenger.AddAsync(passenger);
+            await unitOfWork.PassengerRepository.AddAsync(passenger);
         }
 
         // Save the segments to the repository
         foreach (var segment in segmentList)
         {
-            await _repositorySegment.AddAsync(segment);
+            await unitOfWork.SegmentRepository.AddAsync(segment);
         }
 
         return true;
     }
 
-    public (List<Aircraft> AircraftList, List<Passenger> PassengerList, List<Segment> SegmentList) ExtractDomainLists(SeatMapRootDto model)
+    private (List<Aircraft> AircraftList, List<Passenger> PassengerList, List<Segment> SegmentList) ExtractDomainLists(SeatMapRootDto model)
     {
         var aircraftList = new List<Aircraft>();
         var passengerList = new List<Passenger>();
@@ -94,9 +89,9 @@ public class SeatMapService
     public async Task<SeatMapRootDto> LoadAllAsRootDtoAsync()
     {
         // 1. Load all data from repositories
-        var aircraftList = await _repositoryAircraft.GetAllAsync();
-        var passengerList = await _repositoryPassenger.GetAllAsync();
-        var segmentList = await _repositorySegment.GetAllAsync();
+        var aircraftList = await unitOfWork.AircraftRepository.GetAllAsync();
+        var passengerList = await unitOfWork.PassengerRepository.GetAllAsync();
+        var segmentList = await unitOfWork.SegmentRepository.GetAllAsync();
 
         // 2. Map domain entities to DTOs
         var aircraftDtos = aircraftList.Select(a => a.ToDto()).ToList();
@@ -136,5 +131,48 @@ public class SeatMapService
         );
 
         return rootDto;
+    }
+
+    public async Task<bool> SelectSeatAsync(SelectSeatRequestDto request)
+    {
+        var seatSelectionService = new SeatSelectionDomainService();
+        await unitOfWork.BeginTransactionAsync();
+        try
+        {
+            var passenger = await unitOfWork.PassengerRepository.GetByPassengerNameNumberAsync(request.PassengerNameNumber);
+            if (passenger == null)
+                return false;
+            var aircraft = await unitOfWork.AircraftRepository.GetByIdAsync(request.AircraftCode);
+            if (aircraft == null)
+            {
+                return false;
+            }
+
+            var success = seatSelectionService.TrySelectSeat(
+                aircraft,
+                passenger,
+                request.SeatSlotCode
+            );
+            if (!success)
+            {
+                await unitOfWork.RollbackAsync();
+                return false;
+            }
+
+            await unitOfWork.PassengerRepository.UpdateAsync(passenger);
+            await unitOfWork.AircraftRepository.UpdateAsync(aircraft);
+            await unitOfWork.PassengerRepository.SaveChangesAsync();
+            await unitOfWork.AircraftRepository.SaveChangesAsync();
+            await unitOfWork.CommitAsync();
+            return true;
+
+        }
+        catch (Exception)
+        {
+            await unitOfWork.RollbackAsync();
+            throw;
+        }
+
+        
     }
 }

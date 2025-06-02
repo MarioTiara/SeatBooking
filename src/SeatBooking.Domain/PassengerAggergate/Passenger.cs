@@ -1,5 +1,6 @@
 using SeatBooking.Domain.Shared.ValueObjects;
 using SeatBooking.Domain.Shared;
+using SeatBooking.Domain.AircraftAggregate;
 
 namespace SeatBooking.Domain.PassengerAggregate;
 
@@ -75,6 +76,13 @@ public class Passenger
     public IReadOnlyCollection<FrequentFlyer> FrequentFlyers => _frequentFlyers.AsReadOnly();
     public DocumentInfo DocumentInfo { get; private set; }
     public PassengerSeatSelection? SeatSelection { get; private set; }
+
+    public void SetSeatSelection(SeatSlot slot)
+    {
+        if (slot == null)
+            throw new ArgumentNullException(nameof(slot));
+        SeatSelection = new PassengerSeatSelection(this,slot);
+    }
 
     public void AddEmail(Email email)
     {

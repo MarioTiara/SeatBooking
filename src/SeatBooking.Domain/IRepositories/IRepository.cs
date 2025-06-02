@@ -11,4 +11,5 @@ public interface IRepository<TEntity, TKey> where TEntity : class
     Task UpdateRangeAsync(List<TEntity> entity, int batchSize = 10000);
     Task DeleteAsync(TKey id);
     Task SaveChangesAsync();
+    
 }
