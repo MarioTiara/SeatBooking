@@ -1,133 +1,182 @@
-import React, { useState, useEffect } from 'react';
-import {Plane } from 'lucide-react';
-import SeatSelectionHeader from './SeatSelectionHeader';
-import FlightInfo from './FlightInfo';
-import Legend from './Legend';
-import PassengerInfo from './PassengerInfo';
-import SelectedSeatInfo from './SelectedSeatInfo';
-import SeatMapHeader from './SeatMapHeader';
-import SeatRows from './SeatRows';
+import React, { useState, useEffect } from "react";
+import { Plane } from "lucide-react";
+import SeatSelectionHeader from "./SeatSelectionHeader";
+import FlightInfo from "./FlightInfo";
+import Legend from "./Legend";
+import PassengerInfo from "./PassengerInfo";
+import SelectedSeatInfo from "./SelectedSeatInfo";
+import SeatMapHeader from "./SeatMapHeader";
+import SeatRows from "./SeatRows";
+import ConfirmationModal from "./ConfirmationModal";
 
 const SeatSelectionUI = () => {
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [seatMapData, setSeatMapData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Parse and extend the JSON data to create a full seat map
   useEffect(() => {
     const loadSeatMap = async () => {
       try {
-        const response = await fetch('/api/SeatMap');
+        const response = await fetch("/api/SeatMap");
         const jsonData = await response.json();
-        console.log('Seat map data loaded:', jsonData);
         const segmentData = jsonData.seatsItineraryParts[0].segmentSeatMaps[0];
         const passengerData = segmentData.passengerSeatMaps[0];
         const seatMapInfo = passengerData.seatMap;
         const flightSegment = segmentData.segment;
-        
+
         // Get the actual seats from JSON
-        const actualSeats = seatMapInfo.cabins[0].seatRows[0].seats;
         const seatColumns = seatMapInfo.cabins[0].seatColumns;
-        const extendedSeatMap = seatMapInfo.cabins[0].seatRows.map(row => ({
+        const extendedSeatMap = seatMapInfo.cabins[0].seatRows.map((row) => ({
           ...row,
-          seats: row.seats.map(seat => ({
+          seats: row.seats.map((seat) => ({
             ...seat,
-            selected: false
-          }))
+            selected: false,
+          })),
         }));
-        
+
         setSeatMapData({
           aircraft: seatMapInfo.aircraft,
           seatColumns: seatColumns,
           seatRows: extendedSeatMap,
           passenger: passengerData.passenger,
-          segment: flightSegment
+          segment: flightSegment,
         });
-        
+
         setLoading(false);
       } catch (error) {
-        console.error('Error loading seat map:', error);
+        console.error("Error loading seat map:", error);
         setLoading(false);
       }
     };
 
     // Simulate API loading delay
-    setTimeout(loadSeatMap, 1000);
+    setTimeout(loadSeatMap, 100);
   }, []);
 
   const handleSeatClick = (rowIndex, seatIndex) => {
     if (!seatMapData) return;
-    
+
     const seat = seatMapData.seatRows[rowIndex].seats[seatIndex];
     if (!seat.available) return;
 
-    setSeatMapData(prevData => {
+    setSeatMapData((prevData) => {
       const newData = { ...prevData };
       newData.seatRows = [...prevData.seatRows];
-      
+
       // Clear previous selections
-      newData.seatRows.forEach(row => {
-        row.seats.forEach(s => s.selected = false);
+      newData.seatRows.forEach((row) => {
+        row.seats.forEach((s) => (s.selected = false));
       });
-      
+
       // Select new seat
       newData.seatRows[rowIndex] = { ...newData.seatRows[rowIndex] };
       newData.seatRows[rowIndex].seats = [...newData.seatRows[rowIndex].seats];
-      newData.seatRows[rowIndex].seats[seatIndex] = { 
-        ...newData.seatRows[rowIndex].seats[seatIndex], 
-        selected: true 
+      newData.seatRows[rowIndex].seats[seatIndex] = {
+        ...newData.seatRows[rowIndex].seats[seatIndex],
+        selected: true,
       };
-      
+
       return newData;
     });
-    
+
     setSelectedSeat(seat);
   };
 
   const getSeatClass = (seat) => {
-    let baseClass = "w-8 h-8 mx-0.5 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs font-medium ";
-    
+    let baseClass =
+      "w-8 h-8 mx-0.5 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs font-medium ";
+
     if (!seat.available) {
-      return baseClass + "bg-gray-300 border-gray-400 cursor-not-allowed text-gray-500";
+      return (
+        baseClass +
+        "bg-gray-300 border-gray-400 cursor-not-allowed text-gray-500"
+      );
     }
-    
+
     if (seat.selected) {
-      return baseClass + "bg-blue-600 border-blue-800 text-white transform scale-110 shadow-lg";
+      return (
+        baseClass +
+        "bg-blue-600 border-blue-800 text-white transform scale-110 shadow-lg"
+      );
     }
-    
+
     // Check seat characteristics from JSON data
     const characteristics = seat.seatCharacteristics || [];
-    const isWindow = characteristics.includes('W');
-    const isAisle = characteristics.includes('W');
-    const hasExtraLegroom = characteristics.includes('EL');
-    
+    const isWindow = characteristics.includes("W");
+    const isAisle = characteristics.includes("W");
+    const hasExtraLegroom = characteristics.includes("EL");
+
     if (hasExtraLegroom || isWindow || isAisle) {
-      return baseClass + "bg-green-100 border-green-300 text-green-800 hover:bg-green-200";
+      return (
+        baseClass +
+        "bg-green-100 border-green-300 text-green-800 hover:bg-green-200"
+      );
     }
-    
-    return baseClass + "bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200";
+
+    return (
+      baseClass + "bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200"
+    );
   };
 
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     return {
-      time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-      date: date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+      time: date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+      date: date.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
     };
   };
 
   const getSeatPrice = (seat) => {
-    console.log('Seat price:', seat.total?.alternatives?.[0]?.[0]?.amount);
+    console.log("Seat price:", seat.total?.alternatives?.[0]?.[0]?.amount);
     return seat.total?.alternatives?.[0]?.[0]?.amount || 0;
   };
 
   const getSeatCurrency = (seat) => {
-    return seat.total?.alternatives?.[0]?.[0]?.currency || 'MYR';
+    return seat.total?.alternatives?.[0]?.[0]?.currency || "MYR";
   };
 
-  const confirmSelection = () => {
-    // Add your logic here, e.g., send selectedSeat to API or update state
-    alert(`Seat ${selectedSeat.code} confirmed!`);
+  const handleConfirm = async () => {
+    setIsModalOpen(false);
+
+    const passenger = seatMapData.passenger;
+    const aircraftCode = seatMapData.aircraft;
+
+    try {
+      const res = await fetch("/api/SeatMap/select-seat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          seatSlotCode: selectedSeat.code,
+          aircraftCode: aircraftCode,
+          passengerNameNumber: passenger.passengerNameNumber,
+        }),
+      });
+
+      const data = await res.json();
+      console.log(data);
+      alert(`Seat ${selectedSeat.code} selected successfully!`);
+    } catch (error) {
+      console.error("Error during POST:", error);
+      alert("Failed to select seat. Please try again.");
+    }
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const confirmSelection = async () => {
+    setIsModalOpen(true);
   };
 
   if (loading) {
@@ -161,7 +210,6 @@ const SeatSelectionUI = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
           {/* Flight Info Panel */}
           <div className="lg:col-span-1">
             <FlightInfo
@@ -174,7 +222,7 @@ const SeatSelectionUI = () => {
             {/* Passenger Info */}
             <PassengerInfo passenger={seatMapData.passenger} />
             {/* Legend */}
-            <Legend/>
+            <Legend />
           </div>
 
           {/* Seat Map */}
@@ -189,8 +237,8 @@ const SeatSelectionUI = () => {
               <div className="overflow-x-auto">
                 <div className="inline-block min-w-full">
                   {/* Column Headers */}
-                  <div className='flex justify-center'>
-                  <SeatMapHeader seatColumns={seatMapData.seatColumns} />
+                  <div className="flex justify-center">
+                    <SeatMapHeader seatColumns={seatMapData.seatColumns} />
                   </div>
                   {/* Seat Rows */}
                   <SeatRows
@@ -217,11 +265,20 @@ const SeatSelectionUI = () => {
                 onCancel={() => setSelectedSeat(null)}
               />
             )}
+            {/* Confirmation Modal */}
+            {isModalOpen && (
+              <ConfirmationModal
+                isOpen={isModalOpen}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                message={`Are you sure you want to select seat ${selectedSeat?.code}?`}
+              />
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
-   
+
 export default SeatSelectionUI;

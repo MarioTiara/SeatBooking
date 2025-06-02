@@ -7,7 +7,6 @@ const SeatRows = ({ seatRows, seatColumns, getSeatClass, handleSeatClick }) => (
         <div className="flex">
           {seatColumns.map((col, colIndex) => {
             const seat = row.seats[colIndex];
-            console.log(seat.code);
             if (!seat || seat.storefrontSlotCode !== "SEAT") {
               // Render blank/aisle/side as empty space
               return <div key={`row${rowIndex}-col${colIndex}`} className="w-8 h-8" />;

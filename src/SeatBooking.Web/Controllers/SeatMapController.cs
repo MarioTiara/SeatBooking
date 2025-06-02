@@ -24,11 +24,12 @@ public class SeatMapController : ControllerBase
     public async Task<IActionResult> PostSeatMap([FromBody] SeatMapRootDto request)
     {
         if (request == null)
-            return BadRequest("Invalid seat map data.");
+            return BadRequest(new { message = "Invalid seat map data." });
 
         await _seatMapService.SaveSeatMapAsync(request);
-        return Ok();
+        return Ok(new { message = "Seat map saved successfully." });
     }
+
     [HttpGet]
     public async Task<IActionResult> GetSeatMap()
     {
@@ -42,17 +43,18 @@ public class SeatMapController : ControllerBase
         try
         {
             if (request == null)
-                return BadRequest("Invalid selection request.");
+                return BadRequest(new { message = "Invalid selection request." });
 
-            var seatSlot = await _seatMapService.SelectSeatAsync(request);
-            return Ok(seatSlot);
-        
+            var success = await _seatMapService.SelectSeatAsync(request);
+            if (!success)
+                return BadRequest(new { message = "Failed to select seat. Please check the seat slot code and aircraft code." });
+
+            return Ok(new { message = "Seat selected successfully." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
         }
-    
     }
 }
 
