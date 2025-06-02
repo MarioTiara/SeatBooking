@@ -66,19 +66,25 @@ Ensure you have the following installed on your machine:
    dotnet ef database update
    ```
 
-4. **Build Frontend Assets**
+4. **Install Frontend Dependencies**
    Navigate to the `src/SeatBooking.Web/ClientApp` directory and run:
+   ```bash
+   npm install
+   ```
+
+5. **Build Frontend Assets**
+   After installing dependencies, run:
    ```bash
    npx webpack --mode development
    ```
 
-5. **Run the Application**
+6. **Run the Application**
    Navigate back to the `src/SeatBooking.Web` directory and run:
    ```bash
    dotnet run
    ```
 
-6. **Access the Application**
+7. **Access the Application**
    Once the application is running, you can access it at:
    - **Frontend**: `http://localhost:5251/Home`
    - **Swagger API Documentation**: `http://localhost:5251/swagger`
