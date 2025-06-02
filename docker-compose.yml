@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: seatbooking-db
+    environment:
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+
+  migrate:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /src/src/SeatBooking.Web
+    volumes:
+      - ./:/src
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        dotnet tool install --global dotnet-ef && \
+        export PATH="$PATH:/root/.dotnet/tools" && \
+        dotnet ef database update \
+          --project SeatBooking.Web.csproj \
+          --startup-project SeatBooking.Web.csproj \
+          --connection "Server=db,1433;Database=SeatBooking;User=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seatbooking-web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=SeatBooking;User=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - migrate
+

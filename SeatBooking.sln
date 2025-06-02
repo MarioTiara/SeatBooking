@@ -2,13 +2,11 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Application", "SeatBooking.Application\SeatBooking.Application.csproj", "{A982E4AF-EE92-577E-388A-821A3822A544}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Domain", "src\SeatBooking.Domain\SeatBooking.Domain.csproj", "{161097F3-FD33-FDD3-EA83-630CB9A08D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Domain", "SeatBooking.Domain\SeatBooking.Domain.csproj", "{161097F3-FD33-FDD3-EA83-630CB9A08D9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Infrastructure", "src\SeatBooking.Infrastructure\SeatBooking.Infrastructure.csproj", "{0DEAD26E-739F-56A3-0C7D-191DA405C447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Infrastructure", "SeatBooking.Infrastructure\SeatBooking.Infrastructure.csproj", "{0DEAD26E-739F-56A3-0C7D-191DA405C447}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Web", "SeatBooking.Web\SeatBooking.Web.csproj", "{4C0BB18B-23DB-492B-B0EE-573E5F22CA09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeatBooking.Web", "src\SeatBooking.Web\SeatBooking.Web.csproj", "{4C0BB18B-23DB-492B-B0EE-573E5F22CA09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
