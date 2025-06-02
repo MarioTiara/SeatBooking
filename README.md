@@ -6,7 +6,7 @@ This repository contains the SeatBooking application, which allows users to mana
 
 ## **Getting Started**
 
-Follow the steps below to clone the repository, build the project, and run it using Docker.
+Follow the steps below to clone the repository, build the project, and run it using Docker or locally.
 
 ---
 
@@ -16,14 +16,18 @@ Ensure you have the following installed on your machine:
 - **Git**: [Download Git](https://git-scm.com/downloads)
 - **Docker**: [Download Docker](https://www.docker.com/products/docker-desktop)
 - **Docker Compose**: Comes bundled with Docker Desktop.
+- **Node.js**: [Download Node.js](https://nodejs.org/)
+- **.NET SDK**: [Download .NET SDK](https://dotnet.microsoft.com/download)
 
 ---
 
 ### **Steps to Run the Project**
 
+#### **Option 1: Run via Docker Compose**
+
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/<your-repo-name>/SeatBooking.git
+   git clone git@github.com:MarioTiara/SeatBooking.git
    cd SeatBooking
    ```
 
@@ -40,6 +44,47 @@ Ensure you have the following installed on your machine:
 
 ---
 
+#### **Option 2: Run Locally**
+
+1. **Clone the Repository**
+   ```bash
+   git clone git@github.com:MarioTiara/SeatBooking.git
+   cd SeatBooking
+   ```
+
+2. **Update the Connection String**
+   Open `src/SeatBooking.Web/appsettings.json` and update the `ConnectionStrings` section with your database connection string:
+   ```json
+   "ConnectionStrings": {
+       "DefaultConnection": "YourDatabaseConnectionStringHere"
+   }
+   ```
+
+3. **Apply Database Migrations**
+   Navigate to the `src/SeatBooking.Web` directory and run:
+   ```bash
+   dotnet ef database update
+   ```
+
+4. **Build Frontend Assets**
+   Navigate to the `src/SeatBooking.Web/ClientApp` directory and run:
+   ```bash
+   npx webpack --mode development
+   ```
+
+5. **Run the Application**
+   Navigate back to the `src/SeatBooking.Web` directory and run:
+   ```bash
+   dotnet run
+   ```
+
+6. **Access the Application**
+   Once the application is running, you can access it at:
+   - **Frontend**: `http://localhost:5251/Home`
+   - **Swagger API Documentation**: `http://localhost:5251/swagger`
+
+---
+
 ### **Project Structure**
 
 - **SeatBooking.Domain**: Contains domain models and business logic.
@@ -51,9 +96,11 @@ Ensure you have the following installed on your machine:
 ### **Troubleshooting**
 
 If you encounter issues:
-- Ensure Docker is running.
-- Check for port conflicts (default port is `8080`).
-- Run `docker-compose down` to stop containers and try again.
+- Ensure Docker is running (for Docker Compose).
+- Ensure your database connection string is correct (for local setup).
+- Check for port conflicts (default port is `8080` for Docker and `5251` for local).
+- Run `docker-compose down` to stop containers and try again (for Docker Compose).
+- Run `dotnet clean` and `dotnet build` to rebuild the project (for local setup).
 
 ---
 
