@@ -92,7 +92,7 @@ const SeatSelectionUI = () => {
     let baseClass =
       "w-8 h-8 mx-0.5 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs font-medium ";
 
-    if (selectedSeat.code == seat.code) {
+    if (selectedSeat!=null && selectedSeat.code == seat.code) {
       return (
         baseClass +
         "bg-blue-600 border-blue-800 text-white transform scale-110 shadow-lg"

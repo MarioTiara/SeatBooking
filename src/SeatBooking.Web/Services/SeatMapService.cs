@@ -123,11 +123,18 @@ public class SeatMapService
                 }).ToList()
             )
         };
-
+        var selectedSeats= new List<SeatDto>();
+        if (passengerList.Any(p=>p.SeatSelection != null && p.SeatSelection.SeatSlot != null))
+        {
+            selectedSeats = passengerList
+                .Where(p => p.SeatSelection != null && p.SeatSelection.SeatSlot != null)
+                .Select(p => p.SeatSelection.SeatSlot.ToDto())
+                .ToList();
+        }
         var rootDto = new SeatMapRootDto
         (
             SeatsItineraryParts: seatsItineraryParts,
-            SelectedSeats: passengerList.Select(p=>p.SeatSelection.SeatSlot.ToDto()).ToList()
+            SelectedSeats: selectedSeats
         );
 
         return rootDto;
