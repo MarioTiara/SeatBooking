@@ -91,6 +91,23 @@ Ensure you have the following installed on your machine:
 
 ---
 
+### **Quick Start**
+
+1. **Access Swagger UI**  
+   Open your browser and go to:  
+   - For Docker: `http://localhost:8080/swagger`
+   - For local: `http://localhost:5251/swagger`
+
+2. **Upload Seat Map**  
+   In the Swagger UI, use the `POST /api/Seatmap` endpoint to upload your `seatmap.json` file.
+
+3. **Access the Application**  
+   After uploading the seat map, open:  
+   - For Docker: `http://localhost:8080/Home`
+   - For local: `http://localhost:5251/Home`
+
+---
+
 ### **Project Structure**
 
 - **SeatBooking.Domain**: Contains domain models and business logic.
